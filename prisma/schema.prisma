@@ -15,7 +15,7 @@ model User {
   password        String
   birthDate       DateTime
   telephoneNumber String
-  profileImage    String
+  profileImage    String?
   posts           Post[]
 }
 

@@ -9,15 +9,15 @@ datasource db {
 }
 
 model User {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
   name            String
   password        String
   birthDate       DateTime
   telephoneNumber String
-  money           Int
   profileImage    String?
-  posts           Post[]
+  Discount        Discount? @relation(fields: [discountId], references: [id])
+  discountId      Int?
 }
 
 model Admin {
@@ -25,19 +25,11 @@ model Admin {
   password String
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model Discount {
   id        Int    @id @default(autoincrement())
   type      String
   value     String
+  userID    User[]
   remaining Int    @default(-1)
 }
 
@@ -71,5 +63,5 @@ model Booking {
   Room        Room?    @relation(fields: [roomId], references: [id])
   roomId      Int?
   startdate   DateTime
-  bookingDays Int
+  bookingDays Int      @default(1)
 }

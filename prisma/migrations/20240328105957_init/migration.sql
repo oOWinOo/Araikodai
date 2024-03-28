@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "birthDate" DATETIME NOT NULL,
     "telephoneNumber" TEXT NOT NULL,
-    "money" INTEGER NOT NULL,
+    "money" INTEGER NOT NULL DEFAULT 0,
     "profileImage" TEXT
 );
 

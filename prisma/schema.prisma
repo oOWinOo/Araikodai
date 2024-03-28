@@ -44,6 +44,7 @@ model Hotel {
   id        Int       @id @default(autoincrement())
   name      String
   address   String
+  imageURL  String
   telephone String
   detail    String
   rooms     Room[]
@@ -51,13 +52,15 @@ model Hotel {
 }
 
 model Room {
-  id        Int       @id @default(autoincrement())
-  name      String
-  price     Float
-  occupancy Int
-  Hotel     Hotel     @relation(fields: [hotelId], references: [id])
-  hotelId   Int
-  booking   Booking[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  imageURL    String
+  price       Float
+  occupancy   Int
+  Hotel       Hotel     @relation(fields: [hotelId], references: [id])
+  hotelId     Int
+  booking     Booking[]
 }
 
 model Booking {

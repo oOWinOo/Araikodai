@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -13,7 +17,7 @@ export class HotelsService {
       });
       return hotel;
     } catch (error) {
-      throw BadRequestException
+      throw BadRequestException;
     }
   }
   async getAll(): Promise<Hotel[]> {

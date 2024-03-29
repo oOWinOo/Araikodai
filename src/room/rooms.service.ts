@@ -23,10 +23,10 @@ export class RoomsService {
   async getAll(hotelId: number): Promise<Room[]> {
     try {
       const condition: Prisma.RoomWhereInput = {
-           hotelId : hotelId 
+        hotelId: hotelId,
       };
       const rooms = await this.prisma.room.findMany({
-        where: condition
+        where: condition,
       });
       return rooms;
     } catch (error) {

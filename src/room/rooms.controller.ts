@@ -1,4 +1,12 @@
-import { Body, Controller, HttpStatus, Post, Res, Get, HttpCode } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Res,
+  Get,
+  HttpCode,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';

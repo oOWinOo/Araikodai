@@ -1,6 +1,20 @@
 import { DiscountService } from './discount.service';
-import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
-import { CreateDiscountDto } from './discount.dto';
+import {
+  Body,
+  Controller,
+  Patch,
+  Post,
+  Delete,
+  Get,
+  Param,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  ApplyDiscountDto,
+  CreateDiscountDto,
+  UpdateDiscountDto,
+} from './discount.dto';
 
 @Controller('discount')
 export class DiscountController {
@@ -10,6 +24,41 @@ export class DiscountController {
   @Post()
   async createDiscount(@Body() data: CreateDiscountDto) {
     const result = this.discountService.create(data);
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get()
+  async getAllDiscount() {
+    const result = this.discountService.getAll();
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get(':id')
+  async getDiscount(@Param('id') id: number) {
+    const result = this.discountService.get(id);
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id')
+  async deleteDiscount(@Param('id') id: number) {
+    const result = this.discountService.delete(id);
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id')
+  async update(@Param('id') id: number, @Body() data: UpdateDiscountDto) {
+    const result = this.discountService.update(data, id);
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('applyDiscount/:id')
+  async applyDiscount(@Param('id') id: number, @Body() data: ApplyDiscountDto) {
+    const result = this.discountService.applyDiscount(id, data.userId);
     return result;
   }
 }

@@ -12,7 +12,6 @@ import { DiscountModule } from './discount/discount.module';
     ConfigModule.forRoot({
       load: [configuration],
     }),
-    DiscountModule,
   ],
 })
 export class AppModule {}

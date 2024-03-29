@@ -8,3 +8,14 @@ export class CreateDiscountDto {
   value: string;
   remaining?: number;
 }
+
+export class UpdateDiscountDto {
+  type?: string;
+  value?: string;
+  remaining?: number;
+}
+
+export class ApplyDiscountDto {
+  @IsNotEmpty()
+  userId: number;
+}

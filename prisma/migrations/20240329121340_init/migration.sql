@@ -62,6 +62,7 @@ CREATE TABLE "Booking" (
     "hotelId" INTEGER NOT NULL,
     "roomId" INTEGER,
     "startdate" DATETIME NOT NULL,
+    "person" INTEGER NOT NULL DEFAULT 1,
     "bookingDays" INTEGER NOT NULL DEFAULT 1,
     CONSTRAINT "Booking_hotelId_fkey" FOREIGN KEY ("hotelId") REFERENCES "Hotel" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Booking_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room" ("id") ON DELETE SET NULL ON UPDATE CASCADE

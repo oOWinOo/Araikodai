@@ -1,5 +1,4 @@
-import { Body, Controller, Get, HostParam, Post } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Controller } from '@nestjs/common';
 
 @Controller('booking')
 export class BookingController {

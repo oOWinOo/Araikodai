@@ -19,14 +19,14 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() userLoginInput: { email: string; password: string }) {
+  async signIn(@Body() userLoginInput: { email: string; password: string }) {
     const { email, password } = userLoginInput;
     return this.authService.signIn(email, password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  signupUser(
+  async signupUser(
     @Body() userCreateInput: Prisma.UserCreateInput,
   ): Promise<UserModel> {
     return this.authService.signUp(userCreateInput);

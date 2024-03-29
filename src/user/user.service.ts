@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
+import { prismaExclude } from 'src/prisma/utils';
 
 @Injectable()
 export class UserService {
@@ -31,10 +32,12 @@ export class UserService {
     });
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
+  createUser(data: Prisma.UserCreateInput) {
+    const user = this.prisma.user.create({
       data,
+      select: prismaExclude('User', ['password']),
     });
+    return user;
   }
 
   async updateUser(params: {

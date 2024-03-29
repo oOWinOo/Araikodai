@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from 'src/admin/admin.module';
 // import { APP_GUARD } from '@nestjs/core';
 // import { AuthGuard } from './auth.guard';
+import { BookingController } from 'src/booking/booking.controller';
 
 @Module({
   imports: [

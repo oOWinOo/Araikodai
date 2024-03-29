@@ -17,7 +17,7 @@ export class RoomsService {
       });
       return room;
     } catch (error) {
-      throw BadRequestException;
+      throw new BadRequestException();
     }
   }
   async getAll(hotelId: number): Promise<Room[]> {
@@ -30,8 +30,7 @@ export class RoomsService {
       });
       return rooms;
     } catch (error) {
-      console.log('Cant get rooms : ', error);
-      throw InternalServerErrorException;
+      throw new InternalServerErrorException();
     }
   }
 }

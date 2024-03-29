@@ -1,28 +1,23 @@
-import { Body, Controller, HttpStatus, Post, Res, Get } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res, Get, HttpCode } from '@nestjs/common';
 import { Response } from 'express';
-import { Prisma } from '@prisma/client';
+import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
 
 @Controller('hotels')
 export class HotelsController {
   constructor(private hotelsService: HotelsService) {}
+
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async createHotel(
-    @Body() data: Prisma.HotelCreateInput,
-    @Res() res: Response,
-  ) {
-    const result = await this.hotelsService.create(data);
-    res.status(HttpStatus.CREATED).json({
-      message: 'Create hotel success',
-      hotel: result,
-    });
+    @Body() data: Prisma.HotelCreateInput
+  ) { 
+    return await this.hotelsService.create(data);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get()
-  async getAllHotels(@Res() res: Response) {
-    const hotels = await this.hotelsService.getAll();
-    res.status(HttpStatus.OK).json({
-      hotels: hotels,
-    });
+  async getAllHotels():Promise<Hotel[]>{
+    return await this.hotelsService.getAll();
   }
 }

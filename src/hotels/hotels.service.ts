@@ -17,7 +17,7 @@ export class HotelsService {
       });
       return hotel;
     } catch (error) {
-      throw BadRequestException;
+      throw new BadRequestException();
     }
   }
   async getAll(): Promise<Hotel[]> {
@@ -25,8 +25,7 @@ export class HotelsService {
       const hotels = await this.prisma.hotel.findMany();
       return hotels;
     } catch (error) {
-      console.log('Cant get hotels : ', error);
-      throw InternalServerErrorException;
+      throw new InternalServerErrorException();
     }
   }
 }

@@ -1,7 +1,17 @@
-import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  HttpCode,
+  HttpStatus,
+  Get,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User as UserModel } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,9 +26,16 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signupUser(
+  signupUser(
     @Body() userCreateInput: Prisma.UserCreateInput,
   ): Promise<UserModel> {
     return this.authService.signUp(userCreateInput);
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 }

@@ -9,8 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { User as UserModel } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
@@ -28,7 +27,7 @@ export class AuthController {
   @Post('signup')
   async signupUser(
     @Body() userCreateInput: Prisma.UserCreateInput,
-  ): Promise<UserModel> {
+  ): Promise<Omit<User, 'password'>> {
     return this.authService.signUp(userCreateInput);
   }
 

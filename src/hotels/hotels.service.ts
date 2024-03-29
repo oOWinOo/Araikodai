@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -13,16 +17,15 @@ export class HotelsService {
       });
       return hotel;
     } catch (error) {
-      throw error;
+      throw new BadRequestException();
     }
   }
   async getAll(): Promise<Hotel[]> {
     try {
-      const hotels = await this.prisma.hotel.findMany({});
+      const hotels = await this.prisma.hotel.findMany();
       return hotels;
     } catch (error) {
-      console.log('Cant get hotels : ', error);
-      throw error;
+      throw new InternalServerErrorException();
     }
   }
 }

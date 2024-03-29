@@ -41,7 +41,7 @@ export class AuthController {
     return req.user;
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('login-admin')
   async signInAdmin(
     @Body() adminLoginInput: { username: string; password: string },

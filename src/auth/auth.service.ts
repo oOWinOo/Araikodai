@@ -19,7 +19,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.id, username: user.name, role: 'user' };
+    const payload = { sub: user.id, username: user.name, roles: 'user' };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -34,7 +34,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: admin.id, username: admin.username, role: 'admin' };
+    const payload = { sub: admin.id, username: admin.username, roles: 'admin' };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

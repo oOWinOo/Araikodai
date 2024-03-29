@@ -3,11 +3,9 @@ import {
   Controller,
   HttpStatus,
   Post,
-  Res,
   Get,
   HttpCode,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
 

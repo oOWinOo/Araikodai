@@ -51,7 +51,7 @@ export class DiscountController {
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(@Param('id') id: number, @Body() data: UpdateDiscountDto) {
-    const result = this.discountService.update(data, id);
+    const result = this.discountService.update(id, data);
     return result;
   }
 
@@ -60,5 +60,22 @@ export class DiscountController {
   async applyDiscount(@Param('id') id: number, @Body() data: ApplyDiscountDto) {
     const result = this.discountService.applyDiscount(id, data.userId);
     return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('remaining/:discountId/user/:userId')
+  async remaining(
+    @Param('discountId') discountId: number,
+    @Param('userId') userId: number,
+  ) {
+    const number = await this.discountService.userDiscountQuota(
+      discountId,
+      userId,
+    );
+    return {
+      userId: userId,
+      discountId: discountId,
+      remaining: number,
+    };
   }
 }

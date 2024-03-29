@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -27,7 +31,7 @@ export class DiscountService {
     return discount;
   }
 
-  async update(data: Prisma.DiscountUpdateInput, id: number) {
+  async update(id: number, data: Prisma.DiscountUpdateInput) {
     const updatedDiscount = await this.prisma.discount.update({
       where: {
         id,
@@ -70,5 +74,19 @@ export class DiscountService {
         },
       }),
     ]);
+  }
+  async userDiscountQuota(id: number, userId: number) {
+    const remainingDiscountOfUser = await this.prisma.userOnDiscount.count({
+      where: {
+        discountId: id,
+        userId,
+      },
+    });
+    if (remainingDiscountOfUser > 3) {
+      throw new InternalServerErrorException(
+        `user break using limit by using ${remainingDiscountOfUser}`,
+      );
+    }
+    return 3 - remainingDiscountOfUser;
   }
 }

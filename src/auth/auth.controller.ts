@@ -37,4 +37,13 @@ export class AuthController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('login-admin')
+  async signInAdmin(
+    @Body() adminLoginInput: { username: string; password: string },
+  ) {
+    const { username, password } = adminLoginInput;
+    return this.authService.signInAdmin(username, password);
+  }
 }

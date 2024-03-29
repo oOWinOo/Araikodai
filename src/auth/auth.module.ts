@@ -6,6 +6,8 @@ import { UserModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from 'src/admin/admin.module';
 // import { APP_GUARD } from '@nestjs/core';
+// import { RolesGuard } from 'src/roles/roles.guard';
+// import { APP_GUARD } from '@nestjs/core';
 // import { AuthGuard } from './auth.guard';
 
 @Module({
@@ -25,6 +27,10 @@ import { AdminModule } from 'src/admin/admin.module';
     // {
     //   provide: APP_GUARD,
     //   useClass: AuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
     // },
   ],
   exports: [AuthService],

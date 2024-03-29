@@ -11,6 +11,8 @@ import {
 import { AuthService } from './auth.service';
 import { Prisma, User } from '@prisma/client';
 import { AuthGuard } from './auth.guard';
+import { Roles } from 'src/roles/roles.decorator';
+import { RolesGuard } from 'src/roles/roles.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +33,8 @@ export class AuthController {
     return this.authService.signUp(userCreateInput);
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(['user'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('profile')
   getProfile(@Request() req) {

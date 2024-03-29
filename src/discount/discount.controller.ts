@@ -56,7 +56,7 @@ export class DiscountController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('applyDiscount/:id')
+  @Post('apply-discount/:id')
   async applyDiscount(@Param('id') id: number, @Body() data: ApplyDiscountDto) {
     const result = this.discountService.applyDiscount(id, data.userId);
     return result;

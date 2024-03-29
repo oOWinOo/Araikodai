@@ -1,0 +1,37 @@
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Prisma, Room } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+@Injectable()
+export class RoomsService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(data: Prisma.RoomCreateInput): Promise<Room> {
+    try {
+      const room = await this.prisma.room.create({
+        data,
+      });
+      return room;
+    } catch (error) {
+      throw BadRequestException;
+    }
+  }
+  async getAll(hotelId: number): Promise<Room[]> {
+    try {
+      const condition: Prisma.RoomWhereInput = {
+           hotelId : hotelId 
+      };
+      const rooms = await this.prisma.room.findMany({
+        where: condition
+      });
+      return rooms;
+    } catch (error) {
+      console.log('Cant get rooms : ', error);
+      throw InternalServerErrorException;
+    }
+  }
+}

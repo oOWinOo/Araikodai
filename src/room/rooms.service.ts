@@ -78,11 +78,14 @@ export class RoomsService {
         where: {
           id: roomId,
         },
-        data: data
+        data: data,
       });
       return updatedRoom;
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
       throw new InternalServerErrorException(error.message);

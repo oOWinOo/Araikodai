@@ -6,53 +6,37 @@ import {
 } from '@nestjs/common';
 import { Prisma, Room } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { RoomCreateType } from './type';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { RoomCreateType } from './rooms.dto';
 
 @Injectable()
 export class RoomsService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: RoomCreateType): Promise<Room> {
-    try {
-      const room = await this.prisma.room.create({
-        data: {
-          name: data.name,
-          description: data.description ?? '',
-          imageURL: data.imageURL ?? '',
-          price: data.price,
-          occupancy: data.occupancy,
-          Hotel: { connect: { id: data.hotelId } },
-        },
-      });
-      return room;
-    } catch (error) {
-      if (error instanceof PrismaClientValidationError) {
-        throw new BadRequestException('There is some missing detail.');
-      }
-      throw new BadRequestException(error.message);
-    }
+    const room = await this.prisma.room.create({
+      data: {
+        name: data.name,
+        description: data.description ?? '',
+        imageURL: data.imageURL,
+        price: data.price,
+        occupancy: data.occupancy,
+        Hotel: { connect: { id: data.hotelId } },
+      },
+    });
+    return room;
   }
 
   async getAll(): Promise<Room[]> {
-    try {
-      const rooms = await this.prisma.room.findMany();
-      return rooms;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
+    const rooms = await this.prisma.room.findMany();
+    return rooms;
   }
 
   async getFromHotelId(id: number): Promise<Room[]> {
-    try {
-      console.log(id);
-      const rooms = await this.prisma.room.findMany({
-        where: { hotelId: id },
-      });
-      return rooms;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
+    const rooms = await this.prisma.room.findMany({
+      where: { hotelId: id },
+    });
+    return rooms;
   }
   async editRoom(data: Prisma.RoomUpdateInput, roomId: number): Promise<Room> {
     try {

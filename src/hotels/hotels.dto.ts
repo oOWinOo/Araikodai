@@ -5,10 +5,18 @@ export class HotelInputCreate {
     name: string;
     @IsNotEmpty()
     address: string;
-    @IsOptional()
+    @IsNotEmpty()
     imageURL: string;
     @IsNotEmpty()
     telephone: string;
     @IsOptional()
     detail: string;
+}
+
+export class HotelInputUpdate{
+    name?: string 
+    address?: string
+    imageURL?: string 
+    telephone?: string
+    detail?: string 
 }

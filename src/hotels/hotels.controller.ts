@@ -7,10 +7,11 @@ import {
   HttpCode,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
-import { HotelInputCreate } from './hotels.dto';
+import { HotelInputCreate, HotelInputUpdate } from './hotels.dto';
 
 @Controller('hotels')
 export class HotelsController {
@@ -29,9 +30,15 @@ export class HotelsController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get()
+  async getByName(@Query() name : string): Promise<Hotel[]> {
+    return await this.hotelsService.getByName(name);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async editHotel(
-    @Body() data: Prisma.HotelUpdateInput,
+    @Body() data: HotelInputUpdate,
     @Param('id') id: number,
   ): Promise<Hotel> {
     return await this.hotelsService.update(data, id);

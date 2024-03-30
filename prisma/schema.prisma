@@ -56,7 +56,7 @@ model Hotel {
 model Room {
   id          Int       @id @default(autoincrement())
   name        String
-  description String
+  description String?
   imageURL    String
   price       Float
   occupancy   Int

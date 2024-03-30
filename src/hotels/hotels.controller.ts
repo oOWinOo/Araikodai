@@ -5,6 +5,8 @@ import {
   Post,
   Get,
   HttpCode,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
@@ -23,5 +25,14 @@ export class HotelsController {
   @Get()
   async getAllHotels(): Promise<Hotel[]> {
     return await this.hotelsService.getAll();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put(':id')
+  async editHotel(
+    @Body() data: Prisma.HotelUpdateInput,
+    @Param('id') id: number,
+  ) :Promise<Hotel>{
+    return await this.hotelsService.update(data, id);
   }
 }

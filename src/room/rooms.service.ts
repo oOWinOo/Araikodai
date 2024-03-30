@@ -17,6 +17,7 @@ export class RoomsService {
       });
       return room;
     } catch (error) {
+      console.log(error)
       throw new BadRequestException();
     }
   }

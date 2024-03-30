@@ -9,25 +9,24 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const message = exception.message.replace(/\n/g, '');
-
     const request = ctx.getRequest();
-
+    let status: any;
+    let returnMessage: string;
     switch (exception.code) {
       case 'P2002': {
-        const status = HttpStatus.CONFLICT;
-        response.status(status).json({
-          statusCode: status,
-          path: request.url,
-          message: message,
-        });
+        status = HttpStatus.CONFLICT;
+        returnMessage = message;
         break;
       }
       default:
-        response.status(HttpStatus.BAD_REQUEST).json({
-          statusCode: HttpStatus.BAD_REQUEST,
-          path: request.url,
-          message: message,
-        });
+        status = HttpStatus.BAD_REQUEST;
+        returnMessage = message;
     }
+    return response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message: returnMessage,
+    });
   }
 }

@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
@@ -28,10 +29,15 @@ export class DiscountService {
         id,
       },
     });
+    if (!discount) {
+      throw new NotFoundException(`discount id ${id} is not found`);
+    }
+
     return discount;
   }
 
   async update(id: number, data: Prisma.DiscountUpdateInput) {
+    // try {
     const updatedDiscount = await this.prisma.discount.update({
       where: {
         id,
@@ -39,6 +45,14 @@ export class DiscountService {
       data,
     });
     return updatedDiscount;
+    // } catch (err) {
+    //   if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    //     if (err.code === 'P2025') {
+    //       throw new NotFoundException(`discount id ${id} not found`);
+    //     }
+    //   }
+    //   throw new InternalServerErrorException();
+    // }
   }
 
   async delete(id: number) {

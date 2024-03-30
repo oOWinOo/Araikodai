@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
+import { HotelInputCreate } from './hotels.dto';
 
 @Controller('hotels')
 export class HotelsController {
@@ -17,7 +18,7 @@ export class HotelsController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async createHotel(@Body() data: Prisma.HotelCreateInput) {
+  async createHotel(@Body() data: HotelInputCreate) {
     return await this.hotelsService.create(data);
   }
 

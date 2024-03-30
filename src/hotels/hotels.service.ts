@@ -2,8 +2,10 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
+import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -17,30 +19,38 @@ export class HotelsService {
       });
       return hotel;
     } catch (error) {
-      throw new BadRequestException();
+      if (error instanceof PrismaClientValidationError) {
+        throw new BadRequestException('There is some missing fields.');
+      }
+      throw new InternalServerErrorException(error);
     }
   }
   async getAll(): Promise<Hotel[]> {
     try {
-      const hotels = await this.prisma.hotel.findMany();
+      const hotels = await this.prisma.hotel.findMany({
+        include: { rooms: true, Booking: true },
+      });
       return hotels;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
   async update(data: Prisma.HotelUpdateInput, id: number): Promise<Hotel> {
     try {
-      const s = id.toString()
       const hotel = await this.prisma.hotel.update({
         where: {
-          id: parseInt(s)
+          id: id,
         },
         data: data,
       });
       return hotel;
     } catch (error) {
-      console.log(error);
-      throw new BadRequestException('Can not update hotel');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('Hotel not found');
+        }
+      }
+      throw new InternalServerErrorException(error);
     }
   }
 }

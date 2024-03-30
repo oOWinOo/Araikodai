@@ -6,10 +6,13 @@ import {
   Res,
   Get,
   HttpCode,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
+import { RoomCreateType, RoomUpdateType } from './type';
 
 @Controller('rooms')
 export class RoomsController {
@@ -17,14 +20,28 @@ export class RoomsController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async createRoom(@Body() data: Prisma.RoomCreateInput) {
-    console.log('AAAAAA');
+  async create(@Body() data: RoomCreateType) {
     return await this.roomsService.create(data);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getAllRooms(@Body() hotelId: number) {
-    return await this.roomsService.getAll(hotelId);
+  async getAll(@Param() hotelId: number) {
+    return await this.roomsService.getAll();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get(':id')
+  async getAllFromHotel(@Param('id') hotelId: number) {
+    return await this.roomsService.getFromHotelId(hotelId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id')
+  async update(
+    @Param('id') roomId: number,
+    @Body() data: Prisma.RoomUpdateInput,
+  ) {
+    return await this.roomsService.editRoom(data, roomId);
   }
 }

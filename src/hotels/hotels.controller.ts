@@ -7,6 +7,7 @@ import {
   HttpCode,
   Put,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { Hotel, Prisma } from '@prisma/client';
 import { HotelsService } from './hotels.service';
@@ -28,7 +29,7 @@ export class HotelsController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put(':id')
+  @Patch(':id')
   async editHotel(
     @Body() data: Prisma.HotelUpdateInput,
     @Param('id') id: number,

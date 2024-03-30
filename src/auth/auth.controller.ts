@@ -9,10 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { AuthGuard } from './auth.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/roles/roles.guard';
+import { SignInDto, UserCreateInputDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -20,15 +21,15 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async signIn(@Body() userLoginInput: { email: string; password: string }) {
+  async signIn(@Body() userLoginInput: SignInDto) {
     const { email, password } = userLoginInput;
     return this.authService.signIn(email, password);
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   async signupUser(
-    @Body() userCreateInput: Prisma.UserCreateInput,
+    @Body() userCreateInput: UserCreateInputDto,
   ): Promise<Omit<User, 'password'>> {
     return this.authService.signUp(userCreateInput);
   }

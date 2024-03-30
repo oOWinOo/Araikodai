@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
@@ -15,6 +19,9 @@ export class AuthService {
 
   async signIn(email: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.userService.user({ email });
+    if (!user) {
+      throw new BadRequestException(`Email ${email} is not valid`);
+    }
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) {
       throw new UnauthorizedException();
@@ -30,6 +37,9 @@ export class AuthService {
     pass: string,
   ): Promise<{ access_token: string }> {
     const admin = await this.adminService.admin({ username });
+    if (!admin) {
+      throw new BadRequestException(`Username ${username} is not valid`);
+    }
     const isMatch = pass === admin.password;
     if (!isMatch) {
       throw new UnauthorizedException();

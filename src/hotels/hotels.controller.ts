@@ -5,7 +5,6 @@ import {
   Post,
   Get,
   HttpCode,
-  Put,
   Param,
   Patch,
 } from '@nestjs/common';

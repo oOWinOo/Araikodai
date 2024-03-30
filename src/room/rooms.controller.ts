@@ -3,16 +3,14 @@ import {
   Controller,
   HttpStatus,
   Post,
-  Res,
   Get,
   HttpCode,
   Param,
   Patch,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
-import { RoomCreateType, RoomUpdateType } from './type';
+import { RoomCreateType } from './type';
 
 @Controller('rooms')
 export class RoomsController {
@@ -26,7 +24,7 @@ export class RoomsController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getAll(@Param() hotelId: number) {
+  async getAll() {
     return await this.roomsService.getAll();
   }
 

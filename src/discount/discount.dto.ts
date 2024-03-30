@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateDiscountDto {
   @IsNotEmpty()
@@ -10,9 +10,14 @@ export class CreateDiscountDto {
 }
 
 export class UpdateDiscountDto {
-  type?: string;
-  value?: string;
-  remaining?: number;
+  @IsOptional()
+  type: string;
+
+  @IsOptional()
+  value: string;
+
+  @IsOptional()
+  remaining: number;
 }
 
 export class ApplyDiscountDto {

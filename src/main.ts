@@ -1,9 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
+import { PrismaClientExceptionFilter } from './exception-filter/prisma-exception-filter';
 import { HttpExceptionFilter } from './exception-filter/exception.filter';
+import { useContainer } from 'class-validator';
 
 declare const module: any;
 async function bootstrap() {
@@ -17,10 +19,10 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
-        console.log('at main.ts');
         const result = errors.reduce((acc: string, error, index) => {
           const errorMessages = Object.values(error.constraints).join(' and ');
           if (index === 0) return acc + errorMessages;
@@ -29,9 +31,14 @@ async function bootstrap() {
         return new BadRequestException(result);
       },
       transform: true,
+      whitelist: true,
     }),
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new PrismaClientExceptionFilter(httpAdapter),
+  );
   await app.listen(configService.get('PORT'));
 
   if (module.hot) {

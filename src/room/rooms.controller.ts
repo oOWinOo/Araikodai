@@ -17,17 +17,14 @@ export class RoomsController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async createRoom(@Body() data: Prisma.RoomCreateInput, @Res() res: Response) {
-    const result = await this.roomsService.create(data);
-    res.status(HttpStatus.CREATED).json({
-      message: 'Create room success',
-      room: result,
-    });
+  async createRoom(@Body() data: Prisma.RoomCreateInput) {
+    console.log('AAAAAA');
+    return await this.roomsService.create(data);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getAllRooms(@Res() res: Response, @Body() hotelId: number) {
+  async getAllRooms(@Body() hotelId: number) {
     return await this.roomsService.getAll(hotelId);
   }
 }

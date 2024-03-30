@@ -28,4 +28,19 @@ export class HotelsService {
       throw new InternalServerErrorException();
     }
   }
+  async update(data: Prisma.HotelUpdateInput, id: number): Promise<Hotel> {
+    try {
+      const s = id.toString()
+      const hotel = await this.prisma.hotel.update({
+        where: {
+          id: parseInt(s)
+        },
+        data: data,
+      });
+      return hotel;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Can not update hotel');
+    }
+  }
 }

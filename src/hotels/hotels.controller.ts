@@ -33,7 +33,7 @@ export class HotelsController {
   async editHotel(
     @Body() data: Prisma.HotelUpdateInput,
     @Param('id') id: number,
-  ) :Promise<Hotel>{
+  ): Promise<Hotel> {
     return await this.hotelsService.update(data, id);
   }
 }

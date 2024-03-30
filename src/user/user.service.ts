@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { prismaExclude } from 'src/prisma/utils';
@@ -32,12 +32,18 @@ export class UserService {
     });
   }
 
-  createUser(data: Prisma.UserCreateInput) {
-    const user = this.prisma.user.create({
-      data,
-      select: prismaExclude('User', ['password']),
-    });
-    return user;
+  async createUser(data: Prisma.UserCreateInput) {
+    try {
+      const user = await this.prisma.user.create({
+        data,
+        select: prismaExclude('User', ['password']),
+      });
+      return user;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException(`email ${data.email} already use`);
+      }
+    }
   }
 
   async updateUser(params: {

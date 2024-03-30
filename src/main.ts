@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception-filter/exception.filter';
 
 declare const module: any;
@@ -17,7 +17,20 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (errors) => {
+        console.log('at main.ts');
+        const result = errors.reduce((acc: string, error, index) => {
+          const errorMessages = Object.values(error.constraints).join(' and ');
+          if (index === 0) return acc + errorMessages;
+          return acc + errorMessages + ' , ';
+        }, '');
+        return new BadRequestException(result);
+      },
+      transform: true,
+    }),
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(configService.get('PORT'));
 

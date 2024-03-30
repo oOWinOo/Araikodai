@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
-import { RoomCreateType } from './type';
+import { RoomCreateType } from './rooms.dto';
 
 @Controller('rooms')
 export class RoomsController {

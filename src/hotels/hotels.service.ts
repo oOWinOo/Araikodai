@@ -7,12 +7,13 @@ import {
 import { Hotel, Prisma } from '@prisma/client';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { HotelInputCreate } from './hotels.dto';
 
 @Injectable()
 export class HotelsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.HotelCreateInput): Promise<Hotel> {
+  async create(data: HotelInputCreate): Promise<Hotel> {
     try {
       const hotel = await this.prisma.hotel.create({
         data,
@@ -32,7 +33,8 @@ export class HotelsService {
       });
       return hotels;
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      console.log(error)
+      throw new InternalServerErrorException();
     }
   }
   async update(data: Prisma.HotelUpdateInput, id: number): Promise<Hotel> {

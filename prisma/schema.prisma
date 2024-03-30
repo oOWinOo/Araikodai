@@ -16,8 +16,7 @@ model User {
   birthDate       DateTime
   telephoneNumber String
   profileImage    String?
-  discounts       Discount[]
-  UserOnDiscount  UserOnDiscount[]
+  userOnDiscount  UserOnDiscount[]
 }
 
 model Admin {
@@ -39,9 +38,8 @@ model Discount {
   id             Int              @id @default(autoincrement())
   type           String
   value          String
-  userID         User[]
   remaining      Int              @default(-1)
-  UserOnDiscount UserOnDiscount[]
+  userOnDiscount UserOnDiscount[]
 }
 
 model Hotel {

@@ -6,39 +6,41 @@ import { ConfigService } from '@nestjs/config';
 export class UploadService {
   private s3: AWS.S3;
   private bucket: string;
+  private region: string;
   constructor(private configService: ConfigService) {
+    this.region = configService.get('AWS_REGION');
     this.s3 = new AWS.S3({
       accessKeyId: this.configService.get('AWS_ACCESS_KEY'),
       secretAccessKey: this.configService.get('AWS_SECRET_KEY'),
-      region: this.configService.get('AWS_REGION'),
+      region: this.region,
     });
     this.bucket = configService.get('AWS_BUCKET_NAME');
   }
   async getPreSignedURL(key: string, contentType: string) {
     try {
+      const uniqueKey = key + '-' + new Date().valueOf();
+
       const params = {
         Bucket: this.bucket,
-        Key: key,
+        Key: uniqueKey,
         ContentType: contentType,
         Expires: 180000,
       };
 
-      return await this.s3.getSignedUrlPromise('putObject', params);
+      const presignedUrl = await this.s3.getSignedUrlPromise(
+        'putObject',
+        params,
+      );
+      return {
+        presignedUrl,
+        uniqueKey,
+      };
     } catch (error) {
       throw error;
     }
   }
-  async getPreSignedURLToViewObject(key: string) {
-    try {
-      const params = {
-        Bucket: this.bucket,
-        Key: key,
-        Expires: 30000,
-      };
 
-      return await this.s3.getSignedUrlPromise('getObject', params);
-    } catch (error) {
-      throw error;
-    }
+  getPreSignedURLToViewObject(key: string) {
+    return `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
   }
 }

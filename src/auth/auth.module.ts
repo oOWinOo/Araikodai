@@ -3,7 +3,6 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from 'src/admin/admin.module';
 // import { APP_GUARD } from '@nestjs/core';
 // import { RolesGuard } from 'src/roles/roles.guard';
@@ -18,7 +17,6 @@ import { AdminModule } from 'src/admin/admin.module';
       signOptions: { expiresIn: process.env.JWT_EXPIRES },
     }),
     UserModule,
-    ConfigModule,
     AdminModule,
   ],
   controllers: [AuthController],

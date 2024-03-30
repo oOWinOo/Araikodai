@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  providers: [UploadService, PrismaService],
+  imports: [ConfigModule],
+  providers: [UploadService],
   exports: [UploadService],
   controllers: [UploadController],
 })

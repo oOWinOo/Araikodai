@@ -55,7 +55,7 @@ export class DiscountService {
         id,
       },
     });
-    if (remainingDiscount.remaining < 0) {
+    if (remainingDiscount.remaining <= 0) {
       throw new BadRequestException('this promotion is run out');
     }
     await this.prisma.$transaction([

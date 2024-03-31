@@ -77,4 +77,5 @@ model Booking {
   startdate   DateTime
   person      Int      @default(1)
   bookingDays Int      @default(1)
+  totalPrice  Int
 }

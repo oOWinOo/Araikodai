@@ -1,9 +1,5 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { Hotel, Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { Hotel } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HotelInputCreate, HotelInputUpdate } from './hotels.dto';
 

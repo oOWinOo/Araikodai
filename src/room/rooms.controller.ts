@@ -27,7 +27,7 @@ export class RoomsController {
   }
 
   @HttpCode(HttpStatus.CREATED)
-  @Post("image")
+  @Post('image')
   async uploadRoomImage(@Body() uploadInput: PresignedPutDto) {
     const presigned = await this.uploadService.getPreSignedURL(
       uploadInput.key,

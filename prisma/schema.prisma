@@ -75,6 +75,7 @@ model Booking {
   User        User     @relation(fields: [userId], references: [id])
   userId      Int
   startdate   DateTime
+  endDate     DateTime
   person      Int      @default(1)
   bookingDays Int      @default(1)
   totalPrice  Int

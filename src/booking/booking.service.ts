@@ -71,7 +71,7 @@ export class BookingService {
     return booking;
   }
 
-  async edit(raw: BookingInputUpdate) {
+  async edit(raw: BookingInputUpdate): Promise<Booking> {
     const oldBooking = await this.prisma.booking.findFirst({
       where: {
         id: raw.bookingId,
@@ -127,7 +127,7 @@ export class BookingService {
         `The room with ID ${data.roomId} is designed to accommodate a maximum of ${room.occupancy} people, yet you have ${data.person} people.`,
       );
     }
-    this.prisma.booking.update({
+    return this.prisma.booking.update({
       where: {
         id: raw.bookingId,
       },

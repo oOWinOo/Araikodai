@@ -34,23 +34,12 @@ export class HotelsService {
   }
 
   async update(data: HotelInputUpdate, id: number): Promise<Hotel> {
-    try {
-      const hotel = await this.prisma.hotel.update({
-        where: {
-          id: id,
-        },
-        data: data,
-      });
-      return hotel;
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Hotel id : ${id} is not valid`);
-        }
-      }
-      if (error instanceof Prisma.PrismaClientValidationError) {
-        throw new BadRequestException(`Bad request some field is not valid`);
-      }
-    }
+    const hotel = await this.prisma.hotel.update({
+      where: {
+        id: id,
+      },
+      data: data,
+    });
+    return hotel;
   }
 }

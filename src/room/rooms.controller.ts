@@ -27,7 +27,7 @@ export class RoomsController {
   }
 
   @HttpCode(HttpStatus.CREATED)
-  @Post()
+  @Post("image")
   async uploadRoomImage(@Body() uploadInput: PresignedPutDto) {
     const presigned = await this.uploadService.getPreSignedURL(
       uploadInput.key,
@@ -39,7 +39,7 @@ export class RoomsController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get(':key')
+  @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
     const presigned = await this.uploadService.getPreSignedURLToViewObject(key);
     return {

@@ -8,10 +8,6 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [ConfigModule],
   controllers: [RoomsController],
-  providers: [
-    RoomsService,
-    PrismaService,
-    UploadService
-  ],
+  providers: [RoomsService, PrismaService, UploadService],
 })
 export class RoomsModule {}

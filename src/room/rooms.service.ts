@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Prisma, Room } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { RoomCreateType } from './rooms.dto';
 
 @Injectable()

@@ -15,7 +15,10 @@ import { UploadService } from 'src/upload/upload.service';
 
 @Controller('rooms')
 export class RoomsController {
-  constructor(private roomsService: RoomsService, private uploadService : UploadService) {}
+  constructor(
+    private roomsService: RoomsService,
+    private uploadService: UploadService,
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post()

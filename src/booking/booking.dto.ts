@@ -5,14 +5,13 @@ export class BookingInputCreate {
   @IsNotEmpty() userId: number;
   @IsNotEmpty() dayNum: number;
   @IsNotEmpty() entryDate: Date;
-  @IsOptional() person  :number;
+  @IsOptional() person: number;
 }
 
 export class BookingInputUpdate {
-    @IsNotEmpty() bookingId: number;
-    @IsOptional() roomId: number;
-    @IsOptional() dayNum: number;
-    @IsOptional() entryDate: Date;
-    @IsOptional() person  :number;
-  }
-  
+  @IsNotEmpty() bookingId: number;
+  @IsOptional() roomId: number;
+  @IsOptional() dayNum: number;
+  @IsOptional() entryDate: Date;
+  @IsOptional() person: number;
+}

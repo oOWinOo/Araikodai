@@ -23,10 +23,10 @@ export class HotelsService {
     });
     return hotels;
   }
-  async getByName(name : string): Promise<Hotel[]> {
+  async getByName(name: string): Promise<Hotel[]> {
     const hotels = await this.prisma.hotel.findMany({
       where: {
-        name : name
+        name: name,
       },
       include: { rooms: true, Booking: true },
     });
@@ -48,8 +48,8 @@ export class HotelsService {
           throw new NotFoundException(`Hotel id : ${id} is not valid`);
         }
       }
-      if(error instanceof Prisma.PrismaClientValidationError){
-        throw new BadRequestException(`Bad request some field is not valid`)
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        throw new BadRequestException(`Bad request some field is not valid`);
       }
     }
   }

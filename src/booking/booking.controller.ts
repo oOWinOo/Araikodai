@@ -6,7 +6,7 @@ import { BookingService } from './booking.service';
 @Controller('booking')
 export class BookingController {
   constructor(private bookingService: BookingService) {}
-  
+
   @Post()
   async createBooking(@Body() data: BookingInputCreate): Promise<Booking> {
     await this.bookingService.create(data);

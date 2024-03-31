@@ -1,9 +1,15 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { BookingInputCreate } from './booking.dto';
+import { Booking } from '@prisma/client';
+import { BookingService } from './booking.service';
 
 @Controller('booking')
 export class BookingController {
-  //   @Post()
-  //   async createBoking(@Body() data : Prisma.BookingCreateInput): Promise<string> {
-  //     return 'aaaaaa';
-  //   }
+  constructor(private bookingService: BookingService) {}
+  
+  @Post()
+  async createBooking(@Body() data: BookingInputCreate): Promise<Booking> {
+    await this.bookingService.create(data);
+    return;
+  }
 }

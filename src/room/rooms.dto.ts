@@ -14,3 +14,9 @@ export class RoomCreateType {
     hotelId: number;
   }
   
+  export class PresignedPutDto {
+    @IsNotEmpty()
+    key: string;
+    @IsNotEmpty()
+    contentType: 'image/jpeg' | 'image/png' | 'image/svg';
+  }

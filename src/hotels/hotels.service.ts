@@ -1,31 +1,41 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { Hotel, Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { Hotel } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { HotelInputCreate, HotelInputUpdate } from './hotels.dto';
 
 @Injectable()
 export class HotelsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.HotelCreateInput): Promise<Hotel> {
-    try {
-      const hotel = await this.prisma.hotel.create({
-        data,
-      });
-      return hotel;
-    } catch (error) {
-      throw new BadRequestException();
-    }
+  async create(data: HotelInputCreate): Promise<Hotel> {
+    const hotel = await this.prisma.hotel.create({
+      data,
+    });
+    return hotel;
   }
   async getAll(): Promise<Hotel[]> {
-    try {
-      const hotels = await this.prisma.hotel.findMany();
-      return hotels;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    const hotels = await this.prisma.hotel.findMany({
+      include: { rooms: true, Booking: true },
+    });
+    return hotels;
+  }
+  async getByName(name: string): Promise<Hotel[]> {
+    const hotels = await this.prisma.hotel.findMany({
+      where: {
+        name: name,
+      },
+      include: { rooms: true, Booking: true },
+    });
+    return hotels;
+  }
+
+  async update(data: HotelInputUpdate, id: number): Promise<Hotel> {
+    const hotel = await this.prisma.hotel.update({
+      where: {
+        id: id,
+      },
+      data: data,
+    });
+    return hotel;
   }
 }

@@ -18,6 +18,14 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         returnMessage = message;
         break;
       }
+      case 'P2025': {
+        status = HttpStatus.CONFLICT;
+        returnMessage =
+          (exception.meta.modelName as string) +
+          ' ' +
+          (exception.meta.cause as string);
+        break;
+      }
       default:
         status = HttpStatus.BAD_REQUEST;
         returnMessage = message;

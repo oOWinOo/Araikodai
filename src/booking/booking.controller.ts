@@ -10,7 +10,6 @@ import {
   Param,
   Get,
   Req,
-  BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
@@ -19,7 +18,6 @@ import { BookingService } from './booking.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { Request } from 'express';
 
 @Controller('booking')
 export class BookingController {

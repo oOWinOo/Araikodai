@@ -26,7 +26,11 @@ export class RoomsService {
   }
 
   async getAll(): Promise<Room[]> {
-    const rooms = await this.prisma.room.findMany();
+    const rooms = await this.prisma.room.findMany({
+      include: {
+        booking: true,
+      },
+    });
     return rooms;
   }
 

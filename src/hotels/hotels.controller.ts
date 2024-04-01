@@ -31,14 +31,10 @@ export class HotelsController {
     private uploadService: UploadService,
   ) {}
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post()
-  async createHotel(@Body() data: HotelInputCreate) {
-    return await this.hotelsService.create(data);
-  }
-
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
+  @Post('image')
   async uploadHotelImage(@Body() uploadInput: PresignedPutDto) {
     const presigned = await this.uploadService.getPreSignedURL(
       uploadInput.key,
@@ -49,8 +45,10 @@ export class HotelsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
-  @Get(':key')
+  @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
     const presigned = await this.uploadService.getPreSignedURLToViewObject(key);
     return {
@@ -58,18 +56,31 @@ export class HotelsController {
     };
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
   async getAllHotels(): Promise<Hotel[]> {
     return await this.hotelsService.getAll();
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get()
-  async getByName(@Query() name: string): Promise<Hotel[]> {
+  @Get('search')
+  async getByName(@Query() query: { name: string }): Promise<Hotel[]> {
+    const { name } = query;
     return await this.hotelsService.getByName(name);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.CREATED)
+  @Post()
+  async createHotel(@Body() data: HotelInputCreate) {
+    return await this.hotelsService.create(data);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async editHotel(

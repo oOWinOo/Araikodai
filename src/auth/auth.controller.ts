@@ -34,7 +34,7 @@ export class AuthController {
     return this.authService.signUp(userCreateInput);
   }
 
-  @Roles(['user'])
+  @Roles(['user', 'admin'])
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('profile')

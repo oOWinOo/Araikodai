@@ -7,7 +7,7 @@ import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
 export class BookingService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: BookingInputCreate): Promise<Booking> {
+  async create(data: BookingInputCreate, userId: number): Promise<Booking> {
     const lastDate = new Date(data.entryDate);
     lastDate.setDate(lastDate.getDate() + data.dayNum - 1);
     const room = await this.prisma.room.findFirst({
@@ -58,7 +58,7 @@ export class BookingService {
         },
         User: {
           connect: {
-            id: data.userId,
+            id: userId,
           },
         },
         totalPrice: room.price * data.dayNum,
@@ -156,5 +156,29 @@ export class BookingService {
         id: bookingId,
       },
     });
+  }
+
+  async getAllAdmin() {
+    return this.prisma.booking.findMany();
+  }
+
+  async getAllByUser(userId: number) {
+    return this.prisma.booking.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
+  async getById(bookingId: number) {
+    const booking = await this.prisma.booking.findFirst({
+      where: {
+        id: bookingId,
+      },
+    });
+    if (!booking) {
+      throw new BadRequestException(`No booking with ID ${bookingId}`);
+    }
+    return booking;
   }
 }

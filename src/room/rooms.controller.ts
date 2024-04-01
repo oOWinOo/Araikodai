@@ -25,12 +25,16 @@ export class RoomsController {
     private uploadService: UploadService,
   ) {}
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() data: RoomCreateType) {
     return await this.roomsService.create(data);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('image')
   async uploadRoomImage(@Body() uploadInput: PresignedPutDto) {
@@ -43,6 +47,8 @@ export class RoomsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
@@ -52,18 +58,24 @@ export class RoomsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
   async getAll() {
     return await this.roomsService.getAll();
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async getAllFromHotel(@Param('id') hotelId: number) {
     return await this.roomsService.getFromHotelId(hotelId);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(

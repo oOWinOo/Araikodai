@@ -1,7 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
+import {
+  BookingInputCreate,
+  BookingInputDelete,
+  BookingInputUpdate,
+} from './booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -71,15 +75,15 @@ export class BookingService {
     return booking;
   }
 
-  async edit(raw: BookingInputUpdate): Promise<Booking> {
+  async edit(bookingId: number, raw: BookingInputUpdate): Promise<Booking> {
     const oldBooking = await this.prisma.booking.findFirst({
       where: {
-        id: raw.bookingId,
+        id: bookingId,
       },
     });
     if (!oldBooking) {
       throw new BadRequestException(
-        `The book with ID ${raw.bookingId} is invalid.`,
+        `The book with ID ${bookingId} is invalid.`,
       );
     }
     const data = {
@@ -106,7 +110,7 @@ export class BookingService {
               },
               id: {
                 not: {
-                  equals: raw.bookingId,
+                  equals: bookingId,
                 },
               },
             },
@@ -129,7 +133,7 @@ export class BookingService {
     }
     return this.prisma.booking.update({
       where: {
-        id: raw.bookingId,
+        id: bookingId,
       },
       data: {
         Hotel: {
@@ -147,6 +151,13 @@ export class BookingService {
         endDate: lastDate,
         person: data.person,
         bookingDays: data.dayNum,
+      },
+    });
+  }
+  async delete(bookingId: number) {
+    return this.prisma.booking.delete({
+      where: {
+        id: bookingId,
       },
     });
   }

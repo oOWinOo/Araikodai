@@ -8,8 +8,10 @@ export class BookingInputCreate {
   @IsOptional() person: number;
 }
 
-export class BookingInputUpdate {
+export class BookingInputDelete {
   @IsNotEmpty() bookingId: number;
+}
+export class BookingInputUpdate {
   @IsOptional() roomId: number;
   @IsOptional() dayNum: number;
   @IsOptional() entryDate: Date;

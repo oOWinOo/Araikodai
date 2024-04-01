@@ -8,15 +8,21 @@ import {
   Param,
   Patch,
   Query,
+  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { Hotel } from '@prisma/client';
 import { HotelsService } from './hotels.service';
 import {
+  HotelDeleteInput,
   HotelInputCreate,
   HotelInputUpdate,
   PresignedPutDto,
 } from './hotels.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { Roles } from 'src/roles/roles.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/roles/roles.guard';
 
 @Controller('hotels')
 export class HotelsController {
@@ -71,5 +77,13 @@ export class HotelsController {
     @Param('id') id: number,
   ): Promise<Hotel> {
     return await this.hotelsService.update(data, id);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id')
+  async delete(@Param('id') data: HotelDeleteInput) {
+    return await this.hotelsService.delete(data);
   }
 }

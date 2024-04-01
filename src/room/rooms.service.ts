@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, Room } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { RoomCreateType } from './rooms.dto';
+import { RoomCreateType, RoomDelete } from './rooms.dto';
 
 @Injectable()
 export class RoomsService {
@@ -62,5 +62,23 @@ export class RoomsService {
       data: data,
     });
     return updatedRoom;
+  }
+  async deleteRoom(data: RoomDelete): Promise<Room> {
+    const room = await this.prisma.room.findFirst({
+      where: {
+        id: data.roomId,
+      },
+    });
+    if (!room) {
+      throw new NotFoundException(
+        `Room with room_id : ${data.roomId} does not exist`,
+      );
+    }
+    const result = await this.prisma.room.delete({
+      where: {
+        id: data.roomId,
+      },
+    });
+    return result;
   }
 }

@@ -14,6 +14,10 @@ export class RoomCreateType {
   hotelId: number;
 }
 
+export class RoomDelete {
+  @IsNotEmpty() roomId: number;
+}
+
 export class PresignedPutDto {
   @IsNotEmpty()
   key: string;

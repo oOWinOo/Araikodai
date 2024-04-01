@@ -1,11 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import {
-  BookingInputCreate,
-  BookingInputDelete,
-  BookingInputUpdate,
-} from './booking.dto';
+import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
 
 @Injectable()
 export class BookingService {

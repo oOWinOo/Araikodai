@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - Added the required column `endDate` to the `Booking` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_Booking" (
@@ -11,6 +5,7 @@ CREATE TABLE "new_Booking" (
     "hotelId" INTEGER NOT NULL,
     "roomId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
+    "discountId" INTEGER,
     "startdate" DATETIME NOT NULL,
     "endDate" DATETIME NOT NULL,
     "person" INTEGER NOT NULL DEFAULT 1,
@@ -18,9 +13,10 @@ CREATE TABLE "new_Booking" (
     "totalPrice" INTEGER NOT NULL,
     CONSTRAINT "Booking_hotelId_fkey" FOREIGN KEY ("hotelId") REFERENCES "Hotel" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Booking_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Booking_discountId_fkey" FOREIGN KEY ("discountId") REFERENCES "Discount" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
-INSERT INTO "new_Booking" ("bookingDays", "hotelId", "id", "person", "roomId", "startdate", "totalPrice", "userId") SELECT "bookingDays", "hotelId", "id", "person", "roomId", "startdate", "totalPrice", "userId" FROM "Booking";
+INSERT INTO "new_Booking" ("bookingDays", "discountId", "endDate", "hotelId", "id", "person", "roomId", "startdate", "totalPrice", "userId") SELECT "bookingDays", "discountId", "endDate", "hotelId", "id", "person", "roomId", "startdate", "totalPrice", "userId" FROM "Booking";
 DROP TABLE "Booking";
 ALTER TABLE "new_Booking" RENAME TO "Booking";
 PRAGMA foreign_key_check;

@@ -6,10 +6,13 @@ import {
 import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
-
+import { DiscountService } from 'src/discount/discount.service';
 @Injectable()
 export class BookingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private discountServices: DiscountService,
+  ) {}
 
   async create(data: BookingInputCreate, userId: number): Promise<Booking> {
     const user = await this.prisma.user.findFirst({
@@ -68,7 +71,14 @@ export class BookingService {
         `The room with ID ${data.roomId} is designed to accommodate a maximum of ${room.occupancy} people, yet you have ${data.person} people.`,
       );
     }
-    // const totalPrice: number = room.price * data.dayNum;
+    let totalPrice: number = room.price * data.dayNum;
+    if (data.discountId) {
+      const discount = await this.discountServices.applyDiscount(
+        data.discountId,
+        userId,
+      );
+      totalPrice = Math.floor((totalPrice * (100 - discount.value)) / 100);
+    }
     const booking = await this.prisma.booking.create({
       data: {
         Hotel: {
@@ -86,7 +96,7 @@ export class BookingService {
             id: userId,
           },
         },
-        totalPrice: room.price * data.dayNum,
+        totalPrice: totalPrice,
         startdate: data.entryDate,
         endDate: lastDate,
         person: data.person,

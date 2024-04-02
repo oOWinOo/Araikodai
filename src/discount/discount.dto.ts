@@ -23,14 +23,11 @@ export class UpdateDiscountDto {
 export class ApplyDiscountDto {
   @IsNotEmpty()
   userId: number;
+  @IsNotEmpty()
+  bookingId: number;
 }
 
 export class DiscountReturn {
-  error: string;
+  discountId: number;
   value: number;
-
-  constructor() {
-    this.error = '';
-    this.value = 0;
-  }
 }

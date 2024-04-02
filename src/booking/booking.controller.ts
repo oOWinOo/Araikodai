@@ -34,6 +34,22 @@ export class BookingController {
     return await this.bookingService.getAllByUser(req.user.sub);
   }
 
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get(':id')
+  async getBookingById(@Req() req, @Param() bookingId: number) {
+    if (req.user.roles === 'admin') {
+      return await this.bookingService.getById(bookingId);
+    }
+    const booking = await this.bookingService.getById(bookingId);
+    if (booking.userId != req.user.sub) {
+      console.log(booking.userId, req.user.sub);
+      throw new UnauthorizedException();
+    }
+    return await this.bookingService.getById(bookingId);
+  }
+
   @Roles(['user'])
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)

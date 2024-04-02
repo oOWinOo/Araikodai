@@ -30,7 +30,7 @@ export class DiscountController {
   @HttpCode(HttpStatus.OK)
   @Post()
   async createDiscount(@Body() data: CreateDiscountDto) {
-    const result = this.discountService.create(data);
+    const result = await this.discountService.create(data);
     return result;
   }
 

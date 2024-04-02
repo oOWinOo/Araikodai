@@ -283,21 +283,36 @@ export class BookingService {
     });
   }
   async delete(bookingId: number) {
-    return this.prisma.booking.delete({
+    await this.prisma.booking.delete({
       where: {
         id: bookingId,
       },
     });
+    return {
+      message: `Success to delete booking with ID ${bookingId}`,
+    };
   }
 
   async getAllAdmin() {
-    return this.prisma.booking.findMany();
+    return this.prisma.booking.findMany({
+      include: {
+        Hotel: true,
+        Room: true,
+        User: true,
+        Discount: true,
+      },
+    });
   }
 
   async getAllByUser(userId: number) {
     return this.prisma.booking.findMany({
       where: {
         userId: userId,
+      },
+      include: {
+        Hotel: true,
+        Room: true,
+        Discount: true,
       },
     });
   }
@@ -306,6 +321,11 @@ export class BookingService {
     const booking = await this.prisma.booking.findFirst({
       where: {
         id: bookingId,
+      },
+      include: {
+        Hotel: true,
+        Room: true,
+        Discount: true,
       },
     });
     if (!booking) {

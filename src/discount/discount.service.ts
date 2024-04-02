@@ -48,12 +48,14 @@ export class DiscountService {
   }
 
   async delete(id: number) {
-    const deletedDiscount = await this.prisma.discount.delete({
+    await this.prisma.discount.delete({
       where: {
         id,
       },
     });
-    return deletedDiscount;
+    return {
+      message: `Success to delete discount with ID ${id}`,
+    };
   }
   async applyDiscount(id: number, userId: number): Promise<DiscountReturn> {
     const remainingDiscount = await this.prisma.discount.findUnique({

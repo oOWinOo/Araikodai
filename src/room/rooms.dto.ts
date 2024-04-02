@@ -1,9 +1,10 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class RoomCreateType {
   @IsNotEmpty()
   name: string;
-  description?: string;
+  @IsOptional()
+  description: string;
   @IsNotEmpty()
   imageURL: string;
   @IsNotEmpty()

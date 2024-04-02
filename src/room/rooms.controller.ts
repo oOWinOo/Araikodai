@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
-import { RoomCreateType, RoomDelete } from './rooms.dto';
+import { RoomCreateType } from './rooms.dto';
 import { PresignedPutDto } from 'src/upload/upload.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { Roles } from 'src/roles/roles.decorator';
@@ -59,7 +59,7 @@ export class RoomsController {
     };
   }
 
-  @Roles(['admin'])
+  @Roles(['admin', 'user'])
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
@@ -67,7 +67,7 @@ export class RoomsController {
     return await this.roomsService.getAll();
   }
 
-  @Roles(['admin'])
+  @Roles(['admin', 'user'])
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -89,7 +89,7 @@ export class RoomsController {
   @Roles(['admin'])
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
-  async delete(@Param('id') data: RoomDelete) {
-    return await this.roomsService.deleteRoom(data);
+  async delete(@Param('id') roomId: number) {
+    return await this.roomsService.deleteRoom(roomId);
   }
 }

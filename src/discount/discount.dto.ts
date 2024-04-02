@@ -5,7 +5,7 @@ export class CreateDiscountDto {
   type: string;
 
   @IsNotEmpty()
-  value: string;
+  value: number;
   remaining?: number;
 }
 
@@ -14,7 +14,7 @@ export class UpdateDiscountDto {
   type: string;
 
   @IsOptional()
-  value: string;
+  value: number;
 
   @IsOptional()
   remaining: number;

@@ -7,11 +7,16 @@ import {
   HttpCode,
   Param,
   Patch,
+  Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
-import { PresignedPutDto, RoomCreateType } from './rooms.dto';
+import { PresignedPutDto, RoomCreateType, RoomDelete } from './rooms.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { Roles } from 'src/roles/roles.decorator';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('rooms')
 export class RoomsController {
@@ -20,12 +25,16 @@ export class RoomsController {
     private uploadService: UploadService,
   ) {}
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() data: RoomCreateType) {
     return await this.roomsService.create(data);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('image')
   async uploadRoomImage(@Body() uploadInput: PresignedPutDto) {
@@ -38,6 +47,8 @@ export class RoomsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
@@ -47,18 +58,24 @@ export class RoomsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
   async getAll() {
     return await this.roomsService.getAll();
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async getAllFromHotel(@Param('id') hotelId: number) {
     return await this.roomsService.getFromHotelId(hotelId);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(
@@ -66,5 +83,12 @@ export class RoomsController {
     @Body() data: Prisma.RoomUpdateInput,
   ) {
     return await this.roomsService.editRoom(data, roomId);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete(':id')
+  async delete(@Param('id') data: RoomDelete) {
+    return await this.roomsService.deleteRoom(data);
   }
 }

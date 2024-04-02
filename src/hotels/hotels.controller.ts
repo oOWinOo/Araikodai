@@ -8,15 +8,21 @@ import {
   Param,
   Patch,
   Query,
+  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { Hotel } from '@prisma/client';
 import { HotelsService } from './hotels.service';
 import {
+  HotelDeleteInput,
   HotelInputCreate,
   HotelInputUpdate,
   PresignedPutDto,
 } from './hotels.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { Roles } from 'src/roles/roles.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/roles/roles.guard';
 
 @Controller('hotels')
 export class HotelsController {
@@ -25,14 +31,10 @@ export class HotelsController {
     private uploadService: UploadService,
   ) {}
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post()
-  async createHotel(@Body() data: HotelInputCreate) {
-    return await this.hotelsService.create(data);
-  }
-
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
+  @Post('image')
   async uploadHotelImage(@Body() uploadInput: PresignedPutDto) {
     const presigned = await this.uploadService.getPreSignedURL(
       uploadInput.key,
@@ -43,8 +45,10 @@ export class HotelsController {
     };
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
-  @Get(':key')
+  @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
     const presigned = await this.uploadService.getPreSignedURLToViewObject(key);
     return {
@@ -52,18 +56,31 @@ export class HotelsController {
     };
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
   async getAllHotels(): Promise<Hotel[]> {
     return await this.hotelsService.getAll();
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get()
-  async getByName(@Query() name: string): Promise<Hotel[]> {
+  @Get('search')
+  async getByName(@Query() query: { name: string }): Promise<Hotel[]> {
+    const { name } = query;
     return await this.hotelsService.getByName(name);
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.CREATED)
+  @Post()
+  async createHotel(@Body() data: HotelInputCreate) {
+    return await this.hotelsService.create(data);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async editHotel(
@@ -71,5 +88,13 @@ export class HotelsController {
     @Param('id') id: number,
   ): Promise<Hotel> {
     return await this.hotelsService.update(data, id);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id')
+  async delete(@Param('id') data: HotelDeleteInput) {
+    return await this.hotelsService.delete(data);
   }
 }

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
@@ -7,7 +11,27 @@ import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
 export class BookingService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: BookingInputCreate): Promise<Booking> {
+  async create(data: BookingInputCreate, userId: number): Promise<Booking> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+      include: {
+        booking: true,
+      },
+    });
+    if (!user) {
+      throw new BadRequestException(`user with ID ${userId} i not valid`);
+    }
+    let sumDay: number = 0;
+    for (const booking of user.booking) {
+      sumDay += booking.bookingDays;
+    }
+    if (sumDay + data.dayNum > 3) {
+      throw new BadRequestException(
+        `You already have ${sumDay} nights booked. You have only ${3 - sumDay} remaining nights for booking.`,
+      );
+    }
     const lastDate = new Date(data.entryDate);
     lastDate.setDate(lastDate.getDate() + data.dayNum - 1);
     const room = await this.prisma.room.findFirst({
@@ -58,7 +82,7 @@ export class BookingService {
         },
         User: {
           connect: {
-            id: data.userId,
+            id: userId,
           },
         },
         totalPrice: room.price * data.dayNum,
@@ -71,15 +95,15 @@ export class BookingService {
     return booking;
   }
 
-  async edit(raw: BookingInputUpdate): Promise<Booking> {
+  async edit(bookingId: number, raw: BookingInputUpdate): Promise<Booking> {
     const oldBooking = await this.prisma.booking.findFirst({
       where: {
-        id: raw.bookingId,
+        id: bookingId,
       },
     });
     if (!oldBooking) {
       throw new BadRequestException(
-        `The book with ID ${raw.bookingId} is invalid.`,
+        `The book with ID ${bookingId} is invalid.`,
       );
     }
     const data = {
@@ -88,6 +112,30 @@ export class BookingService {
       entryDate: raw.entryDate ?? oldBooking.startdate,
       person: raw.person ?? oldBooking.person,
     };
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: oldBooking.userId,
+      },
+      include: {
+        booking: true,
+      },
+    });
+    if (!user) {
+      throw new InternalServerErrorException(
+        `User with ID ${oldBooking.userId} in booking with ID ${bookingId} is invalid.`,
+      );
+    }
+    let sumDay: number = 0;
+    for (const booking of user.booking) {
+      if (booking.id != bookingId) {
+        sumDay += booking.bookingDays;
+      }
+    }
+    if (sumDay + data.dayNum > 3) {
+      throw new BadRequestException(
+        `You already have ${sumDay} nights booked. You have only ${3 - sumDay} remaining nights for booking.`,
+      );
+    }
     const lastDate = new Date(data.entryDate);
     lastDate.setDate(lastDate.getDate() + data.dayNum - 1);
     const room = await this.prisma.room.findFirst({
@@ -106,7 +154,7 @@ export class BookingService {
               },
               id: {
                 not: {
-                  equals: raw.bookingId,
+                  equals: bookingId,
                 },
               },
             },
@@ -129,7 +177,7 @@ export class BookingService {
     }
     return this.prisma.booking.update({
       where: {
-        id: raw.bookingId,
+        id: bookingId,
       },
       data: {
         Hotel: {
@@ -149,5 +197,36 @@ export class BookingService {
         bookingDays: data.dayNum,
       },
     });
+  }
+  async delete(bookingId: number) {
+    return this.prisma.booking.delete({
+      where: {
+        id: bookingId,
+      },
+    });
+  }
+
+  async getAllAdmin() {
+    return this.prisma.booking.findMany();
+  }
+
+  async getAllByUser(userId: number) {
+    return this.prisma.booking.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
+  async getById(bookingId: number) {
+    const booking = await this.prisma.booking.findFirst({
+      where: {
+        id: bookingId,
+      },
+    });
+    if (!booking) {
+      throw new BadRequestException(`No booking with ID ${bookingId}`);
+    }
+    return booking;
   }
 }

@@ -6,6 +6,7 @@ import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from './exception-filter/prisma-exception-filter';
 import { HttpExceptionFilter } from './exception-filter/exception.filter';
 import { useContainer } from 'class-validator';
+import * as cookieParser from 'cookie-parser';
 
 declare const module: any;
 async function bootstrap() {
@@ -20,6 +21,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {

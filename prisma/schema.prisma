@@ -38,7 +38,7 @@ model UserOnDiscount {
 model Discount {
   id             Int              @id @default(autoincrement())
   type           String
-  value          String
+  value          Int
   remaining      Int              @default(-1)
   userOnDiscount UserOnDiscount[]
 }

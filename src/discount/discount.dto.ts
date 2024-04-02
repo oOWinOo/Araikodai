@@ -24,3 +24,13 @@ export class ApplyDiscountDto {
   @IsNotEmpty()
   userId: number;
 }
+
+export class DiscountReturn {
+  error: string;
+  value: number;
+
+  constructor() {
+    this.error = '';
+    this.value = 0;
+  }
+}

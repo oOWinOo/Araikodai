@@ -68,6 +68,7 @@ export class BookingService {
         `The room with ID ${data.roomId} is designed to accommodate a maximum of ${room.occupancy} people, yet you have ${data.person} people.`,
       );
     }
+    let totalPrice: number = room.price * data.dayNum;
     const booking = await this.prisma.booking.create({
       data: {
         Hotel: {

@@ -9,17 +9,24 @@ import {
   Param,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApplyDiscountDto,
   CreateDiscountDto,
   UpdateDiscountDto,
 } from './discount.dto';
+import { Roles } from 'src/roles/roles.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/roles/roles.guard';
 
 @Controller('discount')
 export class DiscountController {
   constructor(private discountService: DiscountService) {}
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Post()
   async createDiscount(@Body() data: CreateDiscountDto) {
@@ -27,6 +34,8 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
   async getAllDiscount() {
@@ -34,6 +43,8 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async getDiscount(@Param('id') id: number) {
@@ -41,6 +52,8 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async deleteDiscount(@Param('id') id: number) {
@@ -48,6 +61,8 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(@Param('id') id: number, @Body() data: UpdateDiscountDto) {
@@ -55,6 +70,8 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Post('apply-discount/:id')
   async applyDiscount(@Param('id') id: number, @Body() data: ApplyDiscountDto) {
@@ -62,19 +79,20 @@ export class DiscountController {
     return result;
   }
 
+  @Roles(['user', 'admin'])
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
-  @Get('remaining/:discountId/user/:userId')
-  async remaining(
-    @Param('discountId') discountId: number,
-    @Param('userId') userId: number,
-  ) {
-    const number = await this.discountService.userDiscountQuota(
-      discountId,
-      userId,
-    );
+  @Get('remaining/user/:userId')
+  async remaining(@Param('userId') userId: number, @Req() req) {
+    if (req.user.roles === 'user') {
+      return {
+        userId: req.user.sub,
+        remaining: await this.discountService.userDiscountQuota(req.user.sub),
+      };
+    }
+    const number = await this.discountService.userDiscountQuota(userId);
     return {
       userId: userId,
-      discountId: discountId,
       remaining: number,
     };
   }

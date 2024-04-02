@@ -26,11 +26,6 @@ export class ApplyDiscountDto {
 }
 
 export class DiscountReturn {
-  error: string;
+  discountId: number;
   value: number;
-
-  constructor() {
-    this.error = '';
-    this.value = 0;
-  }
 }

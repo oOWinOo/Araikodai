@@ -16,4 +16,5 @@ export class BookingInputUpdate {
   @IsOptional() dayNum: number;
   @IsOptional() entryDate: Date;
   @IsOptional() person: number;
+  @IsOptional() discountId: number;
 }

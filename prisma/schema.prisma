@@ -16,7 +16,6 @@ model User {
   birthDate       DateTime
   telephoneNumber String
   profileImage    String?
-  userOnDiscount  UserOnDiscount[]
   booking         Booking[]
 }
 
@@ -26,23 +25,14 @@ model Admin {
   password String
 }
 
-model UserOnDiscount {
-  user       User     @relation(fields: [userId], references: [id])
-  userId     Int
-  discountId Int
-  discount   Discount @relation(fields: [discountId], references: [id])
-
-  @@id([userId, discountId])
-}
-
 model Discount {
   id             Int              @id @default(autoincrement())
   type           String
   value          Int
   remaining      Int              @default(-1)
-  userOnDiscount UserOnDiscount[]
+  booking        Booking[]
 }
-
+ 
 model Hotel {
   id        Int       @id @default(autoincrement())
   name      String
@@ -74,6 +64,8 @@ model Booking {
   roomId      Int
   User        User     @relation(fields: [userId], references: [id])
   userId      Int
+  Discount    Discount? @relation(fields: [discountId], references: [id])
+  discountId  Int?
   startdate   DateTime
   endDate     DateTime
   person      Int      @default(1)

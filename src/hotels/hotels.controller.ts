@@ -17,8 +17,8 @@ import {
   HotelDeleteInput,
   HotelInputCreate,
   HotelInputUpdate,
-  PresignedPutDto,
 } from './hotels.dto';
+import { PresignedPutDto } from 'src/upload/upload.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';

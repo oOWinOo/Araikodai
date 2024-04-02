@@ -19,7 +19,3 @@ export class HotelInputUpdate {
 export class HotelDeleteInput {
   @IsNotEmpty() hotelId: number;
 }
-export class PresignedPutDto {
-  @IsNotEmpty() key: string;
-  @IsNotEmpty() contentType: 'image/jpeg' | 'image/png' | 'image/svg';
-}

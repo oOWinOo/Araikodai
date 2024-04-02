@@ -17,10 +17,3 @@ export class RoomCreateType {
 export class RoomDelete {
   @IsNotEmpty() roomId: number;
 }
-
-export class PresignedPutDto {
-  @IsNotEmpty()
-  key: string;
-  @IsNotEmpty()
-  contentType: 'image/jpeg' | 'image/png' | 'image/svg';
-}

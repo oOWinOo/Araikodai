@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApplyDiscountDto,
@@ -82,15 +83,17 @@ export class DiscountController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('remaining/user/:userId')
-  async remaining(
-    @Param('userId') userId: number,
-  ) {
-    const number = await this.discountService.userDiscountQuota(
-      userId,
-    );
+  async remaining(@Param('userId') userId: number, @Req() req) {
+    if (req.user.roles === 'user') {
+      return {
+        userId: req.user.sub,
+        remaining: await this.discountService.userDiscountQuota(req.user.sub),
+      };
+    }
+    const number = await this.discountService.userDiscountQuota(userId);
     return {
       userId: userId,
-      remaining: number
+      remaining: number,
     };
   }
 }

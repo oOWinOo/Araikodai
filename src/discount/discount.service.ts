@@ -58,9 +58,12 @@ export class DiscountService {
   async applyDiscount(id: number, userId: number): Promise<DiscountReturn> {
     const remainingDiscount = await this.prisma.discount.findUnique({
       where: {
-        id,
+        id: id,
       },
     });
+    if (!remainingDiscount) {
+      throw new BadRequestException(`Discount with ID ${id} is invalid.`);
+    }
     if (remainingDiscount.remaining <= 0) {
       throw new BadRequestException('this promotion is run out');
     }

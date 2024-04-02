@@ -23,8 +23,6 @@ export class UpdateDiscountDto {
 export class ApplyDiscountDto {
   @IsNotEmpty()
   userId: number;
-  @IsNotEmpty()
-  bookingId: number;
 }
 
 export class DiscountReturn {

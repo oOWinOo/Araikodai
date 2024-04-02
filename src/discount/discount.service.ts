@@ -135,4 +135,66 @@ export class DiscountService {
     }
     return 3 - remainingDiscountOfUser.length;
   }
+
+  async changeDiscount(
+    oldDiscountId: number,
+    newDiscountId: number,
+    userId: number,
+  ) {
+    const newDiscount = await this.prisma.discount.findUnique({
+      where: {
+        id: newDiscountId,
+      },
+    });
+    const oldDiscount = await this.prisma.discount.findUnique({
+      where: {
+        id: newDiscountId,
+      },
+    });
+    if (!newDiscount) {
+      throw new BadRequestException(
+        `Discount with ID ${newDiscountId} is invalid.`,
+      );
+    }
+    if (newDiscount.remaining <= 0) {
+      throw new BadRequestException('this promotion is run out');
+    }
+    if (newDiscount.type.toLowerCase().includes('birthday')) {
+      const user = await this.prisma.user.findFirst({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException(`user with ID ${userId} is invalid`);
+      }
+      const thisMonth = new Date().getMonth();
+      if (user.birthDate.getMonth() != thisMonth) {
+        throw new BadRequestException(
+          `Can not use this discount : Your birth month is not this month.`,
+        );
+      }
+    }
+    await this.prisma.$transaction([
+      this.prisma.discount.update({
+        data: {
+          remaining: newDiscount.remaining - 1,
+        },
+        where: {
+          id: newDiscountId,
+        },
+      }),
+      this.prisma.discount.update({
+        data: {
+          remaining: oldDiscount.remaining + 1,
+        },
+        where: {
+          id: oldDiscountId,
+        },
+      }),
+    ]);
+    const result: DiscountReturn = {
+      discountId: newDiscount.id,
+      value: newDiscount.value,
+    };
+    return result;
+  }
 }

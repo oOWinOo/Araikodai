@@ -7,6 +7,7 @@ import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BookingInputCreate, BookingInputUpdate } from './booking.dto';
 import { DiscountService } from 'src/discount/discount.service';
+import { DiscountReturn } from 'src/discount/discount.dto';
 @Injectable()
 export class BookingService {
   constructor(
@@ -72,37 +73,64 @@ export class BookingService {
       );
     }
     let totalPrice: number = room.price * data.dayNum;
+    let booking: Booking;
     if (data.discountId) {
       const discount = await this.discountServices.applyDiscount(
         data.discountId,
         userId,
       );
       totalPrice = Math.floor((totalPrice * (100 - discount.value)) / 100);
+      booking = await this.prisma.booking.create({
+        data: {
+          Hotel: {
+            connect: {
+              id: room.hotelId,
+            },
+          },
+          Room: {
+            connect: {
+              id: data.roomId,
+            },
+          },
+          User: {
+            connect: {
+              id: userId,
+            },
+          },
+          totalPrice: totalPrice,
+          startdate: data.entryDate,
+          endDate: lastDate,
+          person: data.person,
+          bookingDays: data.dayNum,
+        },
+      });
+    } else {
+      booking = await this.prisma.booking.create({
+        data: {
+          Hotel: {
+            connect: {
+              id: room.hotelId,
+            },
+          },
+          Room: {
+            connect: {
+              id: data.roomId,
+            },
+          },
+          User: {
+            connect: {
+              id: userId,
+            },
+          },
+          totalPrice: totalPrice,
+          startdate: data.entryDate,
+          endDate: lastDate,
+          person: data.person,
+          bookingDays: data.dayNum,
+        },
+      });
     }
-    const booking = await this.prisma.booking.create({
-      data: {
-        Hotel: {
-          connect: {
-            id: room.hotelId,
-          },
-        },
-        Room: {
-          connect: {
-            id: data.roomId,
-          },
-        },
-        User: {
-          connect: {
-            id: userId,
-          },
-        },
-        totalPrice: totalPrice,
-        startdate: data.entryDate,
-        endDate: lastDate,
-        person: data.person,
-        bookingDays: data.dayNum,
-      },
-    });
+
     return booking;
   }
 
@@ -186,6 +214,51 @@ export class BookingService {
         `The room with ID ${data.roomId} is designed to accommodate a maximum of ${room.occupancy} people, yet you have ${data.person} people.`,
       );
     }
+    let totalPrice: number = room.price * data.dayNum;
+    if (raw.discountId) {
+      let discount: DiscountReturn;
+      if (!oldBooking.discountId) {
+        discount = await this.discountServices.applyDiscount(
+          raw.discountId,
+          oldBooking.userId,
+        );
+        totalPrice = Math.floor((totalPrice * (100 - discount.value)) / 100);
+      } else {
+        discount = await this.discountServices.changeDiscount(
+          oldBooking.discountId,
+          raw.discountId,
+          oldBooking.userId,
+        );
+        totalPrice = Math.floor((totalPrice * (100 - discount.value)) / 100);
+      }
+      return this.prisma.booking.update({
+        where: {
+          id: bookingId,
+        },
+        data: {
+          Hotel: {
+            connect: {
+              id: room.hotelId,
+            },
+          },
+          Room: {
+            connect: {
+              id: data.roomId,
+            },
+          },
+          Discount: {
+            connect: {
+              id: raw.discountId,
+            },
+          },
+          totalPrice: totalPrice,
+          startdate: data.entryDate,
+          endDate: lastDate,
+          person: data.person,
+          bookingDays: data.dayNum,
+        },
+      });
+    }
     return this.prisma.booking.update({
       where: {
         id: bookingId,
@@ -201,7 +274,7 @@ export class BookingService {
             id: data.roomId,
           },
         },
-        totalPrice: room.price * data.dayNum,
+        totalPrice: totalPrice,
         startdate: data.entryDate,
         endDate: lastDate,
         person: data.person,

@@ -34,7 +34,7 @@ export class BookingController {
     return await this.bookingService.getAllByUser(req.user.sub);
   }
 
-  @Roles(['user', 'admin'])
+  @Roles(['user'])
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()

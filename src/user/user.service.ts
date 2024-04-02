@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { prismaExclude } from 'src/prisma/utils';
+import { UserEditProfile } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -46,14 +47,12 @@ export class UserService {
     }
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
+  async updateUser(userId: number, data: UserEditProfile): Promise<User> {
     return this.prisma.user.update({
       data,
-      where,
+      where: {
+        id: userId,
+      },
     });
   }
 

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsOptional } from 'class-validator';
 
 export class SignInDto {
   @IsNotEmpty()
@@ -23,6 +23,8 @@ export class UserCreateInputDto {
 
   @IsNotEmpty()
   telephoneNumber: string;
+  @IsOptional()
+  profileImage: string;
 }
 
 export class ApplyDiscountDto {

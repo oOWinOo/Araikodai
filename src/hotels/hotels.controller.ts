@@ -50,7 +50,7 @@ export class HotelsController {
   @HttpCode(HttpStatus.OK)
   @Get('image/:key')
   async getPresignedGet(@Param('key') key: string) {
-    const presigned = await this.uploadService.getPreSignedURLToViewObject(key);
+    const presigned = this.uploadService.getPreSignedURLToViewObject(key);
     return {
       presignedUrl: presigned,
     };

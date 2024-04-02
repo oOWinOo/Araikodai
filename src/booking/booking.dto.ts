@@ -5,6 +5,7 @@ export class BookingInputCreate {
   @IsNotEmpty() dayNum: number;
   @IsNotEmpty() entryDate: Date;
   @IsOptional() person: number;
+  @IsOptional() discountId: number;
 }
 
 export class BookingInputDelete {

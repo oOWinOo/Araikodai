@@ -37,7 +37,6 @@ export class DiscountService {
   }
 
   async update(id: number, data: Prisma.DiscountUpdateInput) {
-    // try {
     const updatedDiscount = await this.prisma.discount.update({
       where: {
         id,
@@ -45,14 +44,6 @@ export class DiscountService {
       data,
     });
     return updatedDiscount;
-    // } catch (err) {
-    //   if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    //     if (err.code === 'P2025') {
-    //       throw new NotFoundException(`discount id ${id} not found`);
-    //     }
-    //   }
-    //   throw new InternalServerErrorException();
-    // }
   }
 
   async delete(id: number) {
@@ -71,6 +62,20 @@ export class DiscountService {
     });
     if (remainingDiscount.remaining <= 0) {
       throw new BadRequestException('this promotion is run out');
+    }
+    if (remainingDiscount.type.toLowerCase().includes('birthday')) {
+      const user = await this.prisma.user.findFirst({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException(`user with ID ${userId} is invalid`);
+      }
+      const thisMonth = new Date().getMonth();
+      if (user.birthDate.getMonth() != thisMonth) {
+        throw new BadRequestException(
+          `Can not use this discount : Your birth month is not this month.`,
+        );
+      }
     }
     await this.prisma.$transaction([
       this.prisma.userOnDiscount.create({

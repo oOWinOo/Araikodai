@@ -71,8 +71,17 @@ export class AuthController {
   @Post('login-admin')
   async signInAdmin(
     @Body() adminLoginInput: { username: string; password: string },
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { username, password } = adminLoginInput;
-    return this.authService.signInAdmin(username, password);
+    const jwt = await this.authService.signInAdmin(username, password);
+    res.cookie('TOKEN', jwt.access_token, {
+      expires: new Date(Date.now() + 900000),
+      httpOnly: true,
+    });
+    res.send({
+      status: HttpStatus.OK,
+      token: jwt.access_token,
+    });
   }
 }

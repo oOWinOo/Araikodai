@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Hotel } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import {
-  HotelDeleteInput,
-  HotelInputCreate,
-  HotelInputUpdate,
-} from './hotels.dto';
+import { HotelInputCreate, HotelInputUpdate } from './hotels.dto';
 
 @Injectable()
 export class HotelsService {
@@ -43,12 +39,14 @@ export class HotelsService {
     return hotel;
   }
 
-  async delete(data: HotelDeleteInput): Promise<Hotel> {
-    const result = await this.prisma.hotel.delete({
+  async delete(hotelId: number) {
+    await this.prisma.hotel.delete({
       where: {
-        id: data.hotelId,
+        id: hotelId,
       },
     });
-    return result;
+    return {
+      message: `Success to delete hotel with ID ${hotelId}`,
+    };
   }
 }

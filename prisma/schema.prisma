@@ -51,20 +51,20 @@ model Room {
   imageURL    String
   price       Float
   occupancy   Int
-  Hotel       Hotel     @relation(fields: [hotelId], references: [id])
+  Hotel       Hotel     @relation(fields: [hotelId], references: [id] ,onDelete: Cascade)
   hotelId     Int
   booking     Booking[]
 }
 
 model Booking {
   id          Int      @id @default(autoincrement())
-  Hotel       Hotel    @relation(fields: [hotelId], references: [id])
+  Hotel       Hotel    @relation(fields: [hotelId], references: [id] , onDelete: Cascade)
   hotelId     Int
-  Room        Room     @relation(fields: [roomId], references: [id])
+  Room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId      Int
-  User        User     @relation(fields: [userId], references: [id])
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
-  Discount    Discount? @relation(fields: [discountId], references: [id])
+  Discount    Discount? @relation(fields: [discountId], references: [id] , onDelete: SetNull)
   discountId  Int?
   startdate   DateTime
   endDate     DateTime

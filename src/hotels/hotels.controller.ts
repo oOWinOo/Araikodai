@@ -13,11 +13,7 @@ import {
 } from '@nestjs/common';
 import { Hotel } from '@prisma/client';
 import { HotelsService } from './hotels.service';
-import {
-  HotelDeleteInput,
-  HotelInputCreate,
-  HotelInputUpdate,
-} from './hotels.dto';
+import { HotelInputCreate, HotelInputUpdate } from './hotels.dto';
 import { PresignedPutDto } from 'src/upload/upload.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { Roles } from 'src/roles/roles.decorator';
@@ -94,7 +90,7 @@ export class HotelsController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  async delete(@Param('id') data: HotelDeleteInput) {
-    return await this.hotelsService.delete(data);
+  async delete(@Param('id') hotelId: number) {
+    return await this.hotelsService.delete(hotelId);
   }
 }

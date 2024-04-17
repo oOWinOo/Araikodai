@@ -15,6 +15,21 @@ export class RoomCreateType {
   hotelId: number;
 }
 
+export class RoomUpdateType {
+  @IsOptional()
+  name: string;
+  @IsOptional()
+  description: string;
+  @IsOptional()
+  imageURL: string;
+  @IsOptional()
+  price: number;
+  @IsOptional()
+  occupancy: number;
+  @IsOptional()
+  hotelId: number;
+}
+
 export class RoomDelete {
   @IsNotEmpty() roomId: number;
 }

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, Room } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { RoomCreateType } from './rooms.dto';
+import { RoomCreateType, RoomUpdateType } from './rooms.dto';
 
 @Injectable()
 export class RoomsService {
@@ -40,7 +40,7 @@ export class RoomsService {
     });
     return rooms;
   }
-  async editRoom(data: Prisma.RoomUpdateInput, roomId: number): Promise<Room> {
+  async editRoom(data: RoomUpdateType, roomId: number): Promise<Room> {
     const room = await this.prisma.room.findFirst({
       where: {
         id: roomId,

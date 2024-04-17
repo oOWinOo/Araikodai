@@ -89,16 +89,16 @@ export class DiscountService {
       throw new BadRequestException(`User already used 3 discounts.`);
     }
     if (remainingDiscount.type.toLowerCase().includes('birthday')) {
-      const user = await this.prisma.user.findFirst({
-        where: { id: userId },
-      });
-      if (!user) {
-        throw new BadRequestException(`user with ID ${userId} is invalid`);
-      }
       const thisMonth = new Date().getMonth();
       if (user.birthDate.getMonth() != thisMonth) {
         throw new BadRequestException(
           `Can not use this discount : Your birth month is not this month.`,
+        );
+      }
+    } else if (remainingDiscount.type.toLowerCase().includes('firsttime')) {
+      if (user.booking.length != 0) {
+        throw new BadRequestException(
+          `Can not use this discount : You already have booking.`,
         );
       }
     }

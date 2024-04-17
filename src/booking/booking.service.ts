@@ -97,10 +97,10 @@ export class BookingService {
               id: userId,
             },
           },
-          Discount:{
-            connect:{
-              id: data.discountId
-            }
+          Discount: {
+            connect: {
+              id: data.discountId,
+            },
           },
           totalPrice: totalPrice,
           startdate: data.entryDate,

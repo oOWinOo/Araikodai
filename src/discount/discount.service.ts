@@ -96,7 +96,16 @@ export class DiscountService {
         );
       }
     } else if (remainingDiscount.type.toLowerCase().includes('firsttime')) {
-      if (user.booking.length != 0) {
+      const userFirst = await this.prisma.user.findFirst({
+        where: {
+          id: userId,
+        },
+        include: {
+          booking: true,
+        },
+      });
+      console.log(userFirst.booking);
+      if (userFirst.booking.length != 0) {
         throw new BadRequestException(
           `Can not use this discount : You already have booking.`,
         );

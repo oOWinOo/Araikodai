@@ -5,7 +5,7 @@ export class RoomCreateType {
   name: string;
   @IsOptional()
   description: string;
-  @IsNotEmpty()
+  @IsOptional()
   imageURL: string;
   @IsNotEmpty()
   price: number;

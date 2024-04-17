@@ -48,7 +48,7 @@ model Room {
   id          Int       @id @default(autoincrement())
   name        String
   description String?
-  imageURL    String
+  imageURL    String    @default("")
   price       Float
   occupancy   Int
   Hotel       Hotel     @relation(fields: [hotelId], references: [id] ,onDelete: Cascade)

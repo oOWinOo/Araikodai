@@ -10,9 +10,8 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { RoomsService } from './rooms.service';
-import { RoomCreateType } from './rooms.dto';
+import { RoomCreateType, RoomUpdateType } from './rooms.dto';
 import { PresignedPutDto } from 'src/upload/upload.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { Roles } from 'src/roles/roles.decorator';
@@ -79,10 +78,7 @@ export class RoomsController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  async update(
-    @Param('id') roomId: number,
-    @Body() data: Prisma.RoomUpdateInput,
-  ) {
+  async update(@Param('id') roomId: number, @Body() data: RoomUpdateType) {
     return await this.roomsService.editRoom(data, roomId);
   }
 

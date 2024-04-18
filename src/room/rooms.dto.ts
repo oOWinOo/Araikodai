@@ -5,13 +5,28 @@ export class RoomCreateType {
   name: string;
   @IsOptional()
   description: string;
-  @IsNotEmpty()
+  @IsOptional()
   imageURL: string;
   @IsNotEmpty()
   price: number;
   @IsNotEmpty()
   occupancy: number;
   @IsNotEmpty()
+  hotelId: number;
+}
+
+export class RoomUpdateType {
+  @IsOptional()
+  name: string;
+  @IsOptional()
+  description: string;
+  @IsOptional()
+  imageURL: string;
+  @IsOptional()
+  price: number;
+  @IsOptional()
+  occupancy: number;
+  @IsOptional()
   hotelId: number;
 }
 

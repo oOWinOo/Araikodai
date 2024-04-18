@@ -38,7 +38,7 @@ export class BookingController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async getBookingById(@Req() req, @Param() bookingId: number) {
+  async getBookingById(@Req() req, @Param('id') bookingId: number) {
     if (req.user.roles === 'admin') {
       return await this.bookingService.getById(bookingId);
     }

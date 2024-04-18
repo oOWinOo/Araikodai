@@ -62,7 +62,14 @@ export class AuthService {
     });
   }
   async profile(id: number) {
-    const { password, ...profile } = await this.userService.user({ id });
-    return profile;
+    const profile = await this.userService.user({ id });
+    return {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      birthDate: profile.birthDate,
+      telephoneNumber: profile.telephoneNumber,
+      profileImage: profile.profileImage,
+    };
   }
 }

@@ -28,7 +28,10 @@ export class UserController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  async updateProfile(@Param('id') userId: number, data: UserEditProfile) {
+  async updateProfile(
+    @Param('id') userId: number,
+    @Body() data: UserEditProfile,
+  ) {
     return await this.userServices.updateUser(userId, data);
   }
 

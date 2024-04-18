@@ -63,8 +63,8 @@ export class AuthController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@Request() req) {
+    return await this.authService.profile(req.user.sub);
   }
 
   @HttpCode(HttpStatus.CREATED)

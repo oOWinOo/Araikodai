@@ -61,4 +61,8 @@ export class AuthService {
       ...unChanged,
     });
   }
+  async profile(id: number) {
+    const { password, ...profile } = await this.userService.user({ id });
+    return profile;
+  }
 }

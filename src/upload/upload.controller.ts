@@ -26,10 +26,10 @@ export class UploadController {
 
   @HttpCode(HttpStatus.OK)
   @Get(':key')
-  async getPresignedGet(@Param('key') key: string) {
-    const presigned = this.uploadService.getPreSignedURLToViewObject(key);
+  async getUrl(@Param('key') key: string) {
+    const url = this.uploadService.getPreSignedURLToViewObject(key);
     return {
-      presignedUrl: presigned,
+      url: url,
     };
   }
 }

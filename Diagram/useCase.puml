@@ -1,0 +1,70 @@
+@startuml UseCase Diagram
+!theme hacker
+left to right direction
+rectangle "Hotel Booking" {
+
+    (Register)
+    (Login)
+    (Log out)
+    (Edit Profile)
+    (Create booking)
+    (View his booking)
+    (Edit his booking)
+    (Delete his booking)
+
+    (View any bookings)
+    (Edit any bookings)
+    (Delete any bookings)
+
+    (Create Discount)
+    (Edit Discount)
+    (Delete Discount)
+
+    (Create Hotel)
+    (See all Hotel)
+    (Update Hotel Detail)
+    (Delete Hotel)
+
+    (Create Room)
+    (Edit Room)
+    (Delete Room)
+
+    (Login) .> (Register) : <<include>>
+    (Log out) .> (Login) : <<include>>
+    (Create Hotel) .> (Create Room) : <<exclude>>
+}
+
+
+
+User -- (Register)
+
+RegisteredUser --> User
+
+RegisteredUser -- (Login)
+RegisteredUser -- (Edit Profile)
+RegisteredUser -- (Log out)
+
+RegisteredUser -- (Create booking)
+RegisteredUser -- (View his booking)
+RegisteredUser -- (Edit his booking)
+RegisteredUser -- (Delete his booking)
+
+RegisteredUser -- (See all Hotel)
+
+(Login) -- Admin
+(Update Hotel Detail) -- Admin
+(Log out) -- Admin
+(View any bookings) -- Admin
+(Edit any bookings) -- Admin
+(Delete any bookings) -- Admin
+(See all Hotel) -- Admin
+
+(Create Hotel) -- Admin
+(Create Room) -- Admin
+(Edit Room) -- Admin
+(Delete Room) -- Admin
+(Delete Hotel) -- Admin
+(Create Discount) -- Admin
+(Edit Discount) -- Admin
+(Delete Discount) -- Admin
+@enduml

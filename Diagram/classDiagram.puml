@@ -1,0 +1,235 @@
+@startuml Class Diagram
+left to right direction
+package "Hotel"{
+    class "<<Application>>\nApplicationModule" as ApplicationModule{}
+
+    class "<<Resource>>\nBooking" as ResourceBooking{
+        <<GET>> +getAllBookings():Booking
+        <<POST>> +createBooking():Booking
+    }
+    class "<<Resource>>\nBooking" as ResourceBookingId{
+        <<GET>> +getBookingById(:id):Booking
+        <<PATCH>> +editBooking(id:int):Booking
+        <<DELETE>> +deleteBooking(id:int):void
+    }
+
+    class "<<Resource>>\nAuth" as ResourceAuth{
+
+    }
+    class "<<Resource>>\nUser" as ResourceUser{
+        <<Get>> +getProfile(): void
+        <<Post>> +signOut(): void
+        <<Post>> +signupUser(userData): void
+        <<Post>> +signIn(): void
+    }
+    class "<<Resource>>\nUser" as ResourceUserU{
+        <<Patch>> +updateProfile(id:number,UserData): void
+    }
+    class "<<Resource>>\nAdmin" as ResourceAdmin{
+        <<Post>> +signInAdmin(adminData): token
+        <<Get>> +getProfile(): Admin
+        <<Post>> +signOut(): void
+    }
+    class "<<Resource>>\nHotel" as ResourceHotel{
+        <<GET>> +getAllHotels():Hotel[]
+        <<POST>> +createHotel(HotelData):Hotel
+    }
+    class "<<Resource>>\nHotel" as ResourceHotelSearch{
+        <<GET>> +getByName(query: { name: string }):Hotel[]
+    }
+    class "<<Resource>>\nHotel" as ResourceHotelImage{
+        <<POST>> +uploadHotelImage(uploadInput):string 
+        <<GET>> +getPresignedGet(key:string):string
+    }
+    class "<<Resource>>\nHotel" as ResourceHotelId{
+        <<PATCH>> +editHotel(id:int, HotelData):Hotel
+        <<DELETE>> +delete(id:int):void
+    }
+    class "<<Resource>>\nRoom" as ResourceRoom{
+        <<Post>> +create(RoomData): Room
+        <<Get>> +getAll(): Room[]
+        <<Get>> +getAllFromHotel(hotelId: number): Room[]
+    }
+    class "<<Resource>>\nRoom" as ResourceRoomImage{
+        <<Post>> +uploadRoomImage(uploadInput): string
+        <<Get>> +getPresignedGet(key: string): string
+    }
+    class "<<Resource>>\nRoom" as ResourceRoomId{
+        <<Patch>> +updateRoom(id: number): Room
+        <<Delete>> +delete(id: number): void
+    }
+    class "<<Resource>>\nDiscount" as ResourceDiscount{
+        <<POST>> +createDiscount(DiscountData):Discount
+        <<GET>> +getAllDiscount():Discount[]
+    }
+    class "<<Resource>>\nDiscount" as ResourceDiscountId{
+        <<GET>> +getDiscount(id:int):Discount
+        <<DELETE>> +deleteDiscount(id:int):void
+        <<PATCH>> +updateDiscount(id:int,DiscountData):Discount
+        <<GET>> +remaining(userId:int):number
+    }
+
+    class "<<Controller>>\nAuth" as AuthController{
+
+    }
+    class "<<Controller>>\nRoom" as RoomsController{
+
+    }
+    class "<<Controller>>\nHotel" as HotelsController{
+
+    }
+    class "<<Controller>>\nDiscount" as DiscountController{
+
+    }
+    class "<<Controller>>\nBooking" as BookingController{
+
+    }
+    class "<<Controller>>\nUser" as UserController{
+
+    }
+
+    class "<<Module>>\nAuth" as AuthModule{
+
+    }
+    class "<<Module>>\nRoom" as RoomsModule{
+
+    }
+    class "<<Module>>\nHotel" as HotelsModule{
+
+    }
+    class "<<Module>>\nRoom" as DiscountModule{
+
+    }
+    class "<<Module>>\nDiscount" as BookingModule{
+
+    }
+    class "<<Module>>\nUser" as UserModule{
+
+    }
+
+
+
+
+class "<<Representation>>\nBooking" as RepresentationBooking {
+  - id: Int
+  + Hotel: Hotel
+  + Room: Room
+  + User: User
+  + Discount: Discount
+  - startDate: DateTime
+  - endDate: DateTime
+  - person: Int
+  - bookingDays: Int
+  - totalPrice: Int
+}
+
+
+class "<<Representation>>\nHotel" as RepresentationHotel {
+  - id: Int
+  - name: String
+  - address: String
+  - imageURL: String
+  - telephone: String
+  - detail: String
+  + rooms: Room[]
+  + Booking: Booking[]
+}
+
+class "<<Representation>>\nRoom" as RepresentationRoom {
+  - id: Int
+  - name: String
+  - description: String
+  - imageURL: String
+  - price: Float
+  - occupancy: Int
+  + Hotel: Hotel
+  + booking: Booking[]
+}
+
+class "<<Representation>>\nDiscount" as RepresentationDiscount {
+  - id: Int
+  - type: String
+  - value: Int
+  - remaining: Int
+  + booking: Booking[]
+}
+
+class "<<Representation>>\nAdmin" as RepresentationAdmin {
+  - id: Int
+  - username: String
+  - password: String
+}
+class "<<Representation>>\nUser" as RepresentationUser {
+  - id: Int
+  -email:String
+  -name:String
+  -password:String
+  -birthDate:DateTime
+  -telephoneNumber:String
+  -profileImage:String?
+  -booking:Booking[]
+}
+}
+
+
+
+
+ApplicationModule ..> AuthModule
+ApplicationModule ..> HotelsModule
+ApplicationModule ..> DiscountModule
+ApplicationModule ..> UserModule
+ApplicationModule ..> RoomsModule
+ApplicationModule ..> BookingModule
+
+
+AuthModule ..> AuthController:"/auth\n<<Path>>"
+HotelsModule ..> HotelsController:"/hotels\n<<Path>>"
+RoomsModule ..> RoomsController:"/rooms\n<<Path>>"
+DiscountModule ..> DiscountController:"/discount\n<<Path>>"
+BookingModule ..> BookingController:"/booking\n<<Path>>"
+UserModule ..> UserController:"/user\n<<Path>>"
+
+
+AuthController ..> ResourceAuth:"/auth\n<<Path>>"
+
+ResourceAuth ..>  ResourceAdmin:"/login-admin\n<<Path>>"
+ResourceAuth ..>  ResourceAdmin:"/logout\n<<Path>>"
+ResourceAuth ..>  ResourceAdmin:"/profile\n<<Path>>"
+
+ResourceAuth ..>  ResourceUser:"/signup\n<<Path>>"
+ResourceAuth ..>  ResourceUser:"/login\n<<Path>>"
+ResourceAuth ..>  ResourceUser:"/logout\n<<Path>>"
+ResourceAuth ..>  ResourceUser:"/profile\n<<Path>>"
+
+
+HotelsController ..> ResourceHotel
+RoomsController ..> ResourceRoom
+DiscountController ..> ResourceDiscount
+BookingController ..> ResourceBooking
+UserController ..> ResourceUserU:"/{userId}\n<<Path>>"
+
+
+
+ResourceBooking ..> ResourceBookingId:"/{bookingId}\n<<Path>>"
+ResourceDiscount ..> ResourceDiscountId:"/{discountId}\n<<Path>>"
+ResourceHotel ..> ResourceHotelId:"/{hotelId}\n<<Path>>"
+ResourceHotel ..> ResourceHotelImage:"/image\n<<Path>>"
+ResourceHotel ..> ResourceHotelSearch:"/search\n<<Path>>"
+ResourceRoom ..> ResourceRoomId:"/{roomId}\n<<Path>>"
+ResourceRoom ..> ResourceRoomImage:"/image\n<<Path>>"
+
+
+
+ResourceBookingId ..> RepresentationBooking:"<<use>>"
+ResourceDiscountId ..> RepresentationDiscount:"<<use>>"
+ResourceHotelId ..> RepresentationHotel:"<<use>>"
+ResourceHotelImage ..> RepresentationHotel:"<<use>>"
+ResourceHotelSearch ..> RepresentationHotel:"<<use>>"
+ResourceRoomId ..> RepresentationRoom:"<<use>>"
+ResourceRoomImage ..> RepresentationRoom:"<<use>>"
+
+ResourceUser ..> RepresentationUser:"<<use>>"
+ResourceAdmin ..> RepresentationAdmin:"<<use>>"
+
+
+@enduml

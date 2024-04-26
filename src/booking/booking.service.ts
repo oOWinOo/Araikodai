@@ -25,7 +25,7 @@ export class BookingService {
       },
     });
     if (!user) {
-      throw new BadRequestException(`user with ID ${userId} i not valid`);
+      throw new BadRequestException(`user with ID ${userId} is not valid`);
     }
     let sumDay: number = 0;
     for (const booking of user.booking) {

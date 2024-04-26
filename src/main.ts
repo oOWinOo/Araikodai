@@ -25,11 +25,17 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
-        const result = errors.reduce((acc: string, error, index) => {
-          const errorMessages = Object.values(error.constraints).join(' and ');
-          if (index === 0) return acc + errorMessages;
-          return acc + errorMessages + ' , ';
-        }, '');
+        const combinedErrors = errors.map((error) => {
+          const constraints = [];
+          for (const key in error.constraints) {
+            constraints.push(error.constraints[key]);
+          }
+          const combinedConstraint = constraints.join(' and ');
+          return combinedConstraint;
+        });
+
+        const result = combinedErrors.join(' , ');
+
         return new BadRequestException(result);
       },
       transform: true,

@@ -31,9 +31,14 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^3.0.4",
+    "csurf": "^1.11.0",
+    "express-xss-sanitizer": "^1.2.0",
+    "helmet": "^7.1.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.0",
+    "tiny-csrf": "^1.1.4",
     "uploadthing": "^6.7.0"
   },
   "devDependencies": {

@@ -7,6 +7,7 @@ import { PrismaClientExceptionFilter } from './exception-filter/prisma-exception
 import { HttpExceptionFilter } from './exception-filter/exception.filter';
 import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 declare const module: any;
 async function bootstrap() {
@@ -22,6 +23,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.use(cookieParser());
+  app.use(helmet());
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
